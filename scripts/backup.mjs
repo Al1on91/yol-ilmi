@@ -7,7 +7,9 @@ import * as XLSX from 'xlsx';
 import nodemailer from 'nodemailer';
 
 const env = k => { const v = process.env[k]; if (!v) { console.error(`Maxfiy qiymat yo'q: ${k}`); process.exit(1); } return v.trim(); };
-const URL0 = env('SUPABASE_URL').replace(/\/$/, ''), KEY = env('SUPABASE_SERVICE_KEY');
+// Nusxalashda qo'shilib qolgan bo'sh joy va qatorlarni tozalash.
+const pickKey = v => (v.match(/sb_secret_[A-Za-z0-9_-]+|eyJ[A-Za-z0-9_.-]+/) || [v.split(/\s+/).filter(Boolean)[0]])[0];
+const URL0 = env('SUPABASE_URL').split(/\s+/)[0].replace(/\/$/, ''), KEY = pickKey(env('SUPABASE_SERVICE_KEY'));
 
 // Savollar matni va transliteratsiya sayt faylidan olinadi (bitta manba).
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
@@ -59,7 +61,7 @@ const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
 fs.mkdirSync('backup', { recursive: true }); fs.writeFileSync(`backup/${file}`, buf);
 
 const cit = responses.filter(r => r.audience === 'citizen').length, exp = responses.length - cit;
-const tx = nodemailer.createTransport({ host: process.env.SMTP_HOST || 'smtp.gmail.com', port: +(process.env.SMTP_PORT || 465), secure: true, auth: { user: env('SMTP_USER'), pass: env('SMTP_PASS') } });
+const tx = nodemailer.createTransport({ host: process.env.SMTP_HOST || 'smtp.gmail.com', port: +(process.env.SMTP_PORT || 465), secure: true, auth: { user: env('SMTP_USER'), pass: env('SMTP_PASS').replace(/\s+/g, '') } });
 await tx.sendMail({
   from: `YO‘L ILMI <${env('SMTP_USER')}>`, to: env('MAIL_TO'),
   subject: `YO‘L ILMI: haftalik zaxira nusxa, ${today}`,
