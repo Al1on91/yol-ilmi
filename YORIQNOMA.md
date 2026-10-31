@@ -23,6 +23,7 @@ Taxminan 20–30 daqiqa vaqt oladi.
 1. Chap menyudan **SQL Editor**ni tanlang va **New query** tugmasini bosing.
 2. `supabase/schema.sql` faylini oching, ichidagi hamma matnni nusxalab, shu oynaga joylang.
 3. **Run** tugmasini bosing. Pastda `Success. No rows returned` yozuvi chiqishi kerak.
+4. Xuddi shunday `supabase/migration-2.sql` faylini ham ishga tushiring (ekspert komissiyasi, muammo xabarlari va rasm ombori uchun).
 
 ## 3-qadam. Begona ro'yxatdan o'tishni yopish
 
@@ -96,6 +97,35 @@ Saytga faqat siz yaratgan havola orqali kiriladi. Havolasiz kirgan odam "Kirish 
 
 Har bir havola orqali nechta javob kelgani ko'rinadi, CSV eksportda esa "Kanal" ustuni chiqadi.
 
+## 9-qadam. Haftalik zaxira nusxa (emailga Excel)
+
+Har dushanba soat 09:00 da (Toshkent vaqti) GitHub barcha ma'lumotlarni Excel faylga yig'ib, emailingizga yuboradi. Bu Supabase bepul loyihasini ham "uxlab qolish"dan saqlaydi.
+
+1. **Gmail ilova paroli:** Google akkauntingizda 2 bosqichli tekshiruvni yoqing, so'ng https://myaccount.google.com/apppasswords sahifasida "YOL ILMI" nomli ilova paroli yarating (16 harf).
+2. **Supabase maxfiy kaliti:** Supabase → **Project Settings → API Keys** → **Secret keys** bo'limidan kalitni nusxalang (`sb_secret_...`). Bu kalit faqat GitHub maxfiy sozlamasiga qo'yiladi, hech qachon saytga emas.
+3. GitHub'da `yol-ilmi` repozitoriyasi → **Settings → Secrets and variables → Actions → New repository secret** orqali 5 ta qiymat qo'shing:
+
+| Nomi | Qiymati |
+|---|---|
+| `SUPABASE_URL` | `https://nzxqrbahwneheojmjyzt.supabase.co` |
+| `SUPABASE_SERVICE_KEY` | 2-banddagi `sb_secret_...` kalit |
+| `SMTP_USER` | Gmail manzilingiz |
+| `SMTP_PASS` | 1-banddagi ilova paroli |
+| `MAIL_TO` | zaxira keladigan email (bir nechta bo'lsa vergul bilan) |
+
+4. Tekshirish: **Actions → Haftalik zaxira nusxa → Run workflow**. 1–2 daqiqada email kelishi kerak.
+
+## Yangi bo'limlar (admin panel)
+
+- **Hududlar xaritasi:** O'zbekiston xaritasida javoblar soni va o'rtacha baholar. Hudud ustiga bossangiz, shu hudud tahlili ochiladi. n<10 hududlar shtrixlanadi.
+- **Aholi va mutaxassislar:** bir xil mavzu bo'yicha ikki auditoriya natijasi yonma-yon. Ikkalasi ham kuchli signal bersa, mavzuni bir tugma bilan tadqiqot portfeliga gipoteza sifatida qo'shasiz.
+- **Kesishma tahlili:** ikki savolni o'zaro bog'lash (masalan, yo'ldan har kuni foydalanadiganlar yo'lni qanday baholagan).
+- **Vaqt bo'yicha o'zgarish:** natijalar oylar yoki so'rov versiyalari bo'yicha.
+- **Muammolar matritsasi:** keng tarqalganlik va jiddiylik bo'yicha 2×2 matritsa; o'ng yuqori soha — birinchi navbatdagi muammolar.
+- **Ekspert komissiyasi:** har bir admin yo'nalishlarni dolzarblik, amalga oshirish imkoni va iqtisodiy samara bo'yicha 1–5 ball bilan baholaydi; reyting avtomatik tuziladi.
+- **Muammo xabarlari:** saytdagi ixtiyoriy "Muammo xabari" bo'limidan kelgan xabarlar (joy, xarita nuqtasi, 3 tagacha rasm, ixtiyoriy aloqa). Holatini "Ko'rib chiqilmoqda", "Hal qilindi" yoki "Rad etildi" qilib belgilaysiz. Bu xabarlar anonim so'rovdan alohida saqlanadi; rasmlar yopiq omborda turadi va faqat admin ko'radi, rasmlardagi GPS ma'lumoti yuborishdan oldin o'chiriladi.
+- **Taklif havolalari → Kanal samaradorligi:** har bir havola bo'yicha nechta odam so'rovni boshlagani, nechtasi yuborgani va yakunlash foizi.
+
 ## Kundalik ish
 
 - **Natijalarni e'lon qilish:** shu bo'limdagi **Natijalarni e'lon qilish** tugmasini bosing. Ommaviy sahifaga faqat agregat raqamlar chiqadi, n<10 guruhlar yashiriladi.
@@ -104,7 +134,7 @@ Har bir havola orqali nechta javob kelgani ko'rinadi, CSV eksportda esa "Kanal" 
 
 ## Muhim eslatmalar
 
-- **Bepul tarif:** Supabase bepul loyihani 7 kun davomida hech qanday faollik bo'lmasa to'xtatib qo'yadi. So'rov faol ketayotganda bu muammo emas. Agar to'xtab qolsa, Supabase panelida **Restore** tugmasini bosasiz. Ma'lumotlarni muntazam CSV'ga eksport qilib turing.
+- **Bepul tarif:** Supabase bepul loyihani 7 kun davomida hech qanday faollik bo'lmasa to'xtatib qo'yadi. So'rov faol ketayotganda bu muammo emas. Agar to'xtab qolsa, Supabase panelida **Restore** tugmasini bosasiz. 9-qadamdagi haftalik zaxira buni oldini oladi.
 - **Anonimlik:** bazaga IP, vaqt (soat) va qurilma ma'lumoti yozilmaydi, sana faqat kun aniqligida saqlanadi. Lekin Supabase va GitHub/Vercel serverlari o'zlarining texnik jurnallarida IP-manzilni vaqtincha saqlashi mumkin. TZ'ning 11-bandiga ko'ra respublika miqyosida ishga tushirishdan oldin buni huquqiy va axborot xavfsizligi bo'yicha ko'rib chiqing.
 - **Bot va takroriy javoblar:** sayt oddiy bot-tuzoq va seans cheklovidan foydalanadi. "Bir shaxs, bir javob" qoidasini qat'iy ta'minlab bo'lmaydi (TZ'da ham shunday deyilgan).
 - **Ma'lumotlarni sinov paytida tozalash:** Supabase'da **Table Editor → responses** jadvaliga kiring, qatorlarni belgilab, **Delete** tugmasini bosing.
