@@ -820,7 +820,7 @@ function partHTML(){
       <div>
         <div class="part-total"><b>${fmt(tot)}</b><span class="muted">${T('қатнашчи')}</span></div>
         <div class="part-split"><div><b>${fmt(byA('citizen'))}</b><span>${T('Аҳоли')}</span></div><div><b>${fmt(byA('expert'))}</b><span>${T('Мутахассислар')}</span></div></div>
-        <p class="muted" style="font-size:13px;margin:0 0 10px">${T('Қамров')}: <b>${covered} / ${NOREG}</b> ${T('ҳудуд')}</p>
+        <p class="muted" style="font-size:13px;margin:0 0 10px">${T('Қамров')}: <b>${covered} / ${NOREG}</b> ${T('ҳудуд')}${c[NOREG] ? ' · ' + T('ҳудудини кўрсатмаган') + ': <b>' + fmt(c[NOREG]) + '</b>' : ''}</p>
         ${top.length ? `<ul class="part-list">${top.slice(0, 7).map(x => `<li><span>${esc(x.name)}</span><b class="num">${fmt(x.v)}</b><span class="bt"><span class="bf" style="width:${(x.v / max * 100).toFixed(1)}%"></span></span></li>`).join('')}</ul>` : `<p class="muted">${T('Ҳали қатнашчилар йўқ. Биринчи бўлинг!')}</p>`}
       </div>
     </div>
