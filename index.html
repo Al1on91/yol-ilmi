@@ -8,7 +8,8 @@
 <meta property="og:title" content="YO‘L ILMI — anonim ilmiy so‘rov">
 <meta property="og:description" content="Yo‘llar haqidagi fikringiz ilmiy tadqiqotga aylanadi. Ism, telefon yoki manzil so‘ralmaydi.">
 <meta name="theme-color" content="#1C2529">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%231A5C9C'/%3E%3Cpath d='M16.5 8h7l6.5 26H10z' fill='%23fff'/%3E%3Cpath d='M19.3 11h1.4l.3 4h-2zM19 18h2l.4 5h-2.8zM18.6 26h2.8l.5 6h-3.8z' fill='%23E0A100'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="emblem.png">
+<meta property="og:image" content="https://al1on91.github.io/yol-ilmi/uzdornii-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;600&display=swap">
@@ -45,13 +46,13 @@ img{max-width:100%}
 .pk{border:1px solid #d5dddc;border-radius:6px;padding:10px}
 .pk span{display:block;font-size:11px;color:#55666F;text-transform:uppercase;letter-spacing:.05em}
 .pk b{display:block;font-size:24px;margin-top:4px;color:#14212A}
-.pdf-h2{font-size:20px;margin:6px 0 8px;padding-bottom:6px;border-bottom:3px solid #1A5C9C;color:#14212A}
-.pdf-h2.expert{border-color:#0E7765}
+.pdf-h2{font-size:20px;margin:6px 0 8px;padding-bottom:6px;border-bottom:3px solid #08807F;color:#14212A}
+.pdf-h2.expert{border-color:#3D6590}
 .pdf-kf{display:grid;gap:0}
 .pdf-kf div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:baseline;border-bottom:1px solid #e6ebea;padding:6px 0}
 .pdf-kf span{color:#55666F}.pdf-kf b{color:#14212A}.pdf-kf small{color:#8a979c;font-size:11px}
 .pdf-q{border:1px solid #e1e7e6;border-radius:6px;padding:10px 12px}
-.pdf-qn{font-size:11px;font-weight:700;color:#1A5C9C}
+.pdf-qn{font-size:11px;font-weight:700;color:#08807F}
 .pdf-q h3{font-size:15px;margin:2px 0 4px;color:#14212A}
 .pdf-meta{font-size:11px;color:#55666F;margin-bottom:6px}
 .pdf-q img{width:100%;display:block}
@@ -59,6 +60,55 @@ img{max-width:100%}
 .pdf-texts{margin:0;padding-left:18px}.pdf-texts li{margin:3px 0;font-size:12.5px}
 .pdf-t{border-collapse:collapse;width:100%;min-width:0;font-size:12px}.pdf-t th,.pdf-t td{border:1px solid #d5dddc;padding:4px 6px;text-align:left;color:#14212A}.pdf-t th{background:#eef2f1;text-transform:none;letter-spacing:0;font:600 12px 'Noto Sans',Arial,sans-serif}
 .pdf-p{font-size:12.5px;margin:0}
+/* --- Yo'l xo'jaligi bezaklari --- */
+.brand-logo{height:44px;width:auto;display:block;filter:var(--logo-filter);transition:filter .2s}
+.brand b{letter-spacing:.04em}
+.nav a{position:relative}
+.nav a[aria-current="page"]::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--marking) 0 8px,transparent 8px 13px)}
+@keyframes laneMove{to{background-position-x:-96px}}
+@keyframes dashFlow{to{stroke-dashoffset:-64}}
+@keyframes carIn{from{transform:translateX(-60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes blink{50%{opacity:.25}}
+.lane{animation:laneMove 2.6s linear infinite}
+.hero{background:radial-gradient(120% 90% at 85% 0%,rgba(8,128,127,.35),transparent 60%),var(--asphalt)}
+.hero-art{position:absolute;right:0;top:0;bottom:0;width:min(56%,640px);pointer-events:none;opacity:.55}
+.hero-art svg{width:100%;height:100%;display:block}
+.hero-art .cl{stroke-dasharray:22 42;animation:dashFlow 1.6s linear infinite}
+.hero-in{position:relative;z-index:1}
+.hero-logo{height:64px;width:auto;filter:brightness(0) invert(1);opacity:.95;margin-bottom:18px;display:block}
+.hero .post{position:relative;background:linear-gradient(180deg,#F5F7F6,#DCE3E1);color:#14212A;border:0;border-top:0;border-radius:8px 8px 4px 4px;padding:22px 12px 14px;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.hero .post::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;border-radius:8px 8px 0 0;background:var(--marking)}
+.hero .post span{color:#3E4E55}
+.hero .post b{color:#14212A}
+.btn-go::after{content:"";width:14px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 2l5 6-5 6h3l5-6-5-6zM8 2l5 6-5 6h3l5-6-5-6z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 2l5 6-5 6h3l5-6-5-6zM8 2l5 6-5 6h3l5-6-5-6z'/%3E%3C/svg%3E") center/contain no-repeat;transition:transform .2s}
+.btn-go:hover::after{transform:translateX(4px)}
+body .aud{position:relative;overflow:hidden;border-top:5px solid var(--sign)}
+body .aud.c2{border-top-color:var(--c2)}
+.aud-ico{position:absolute;right:20px;top:22px;width:64px;height:64px;color:var(--sign);opacity:.9}
+.aud.c2 .aud-ico{color:var(--c2)}
+.aud h3{padding-right:70px}
+body .steps li::after{top:-12px;left:0;width:14px;height:22px;border-radius:3px 3px 2px 2px;background:linear-gradient(180deg,var(--marking) 0 7px,var(--road-edge) 7px);border:1px solid var(--line);box-shadow:0 2px 0 rgba(0,0,0,.15)}
+@media (max-width:760px){body .steps li::after{top:0;left:-28px}}
+.sign-no{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;border:4px solid var(--barrier);position:relative;vertical-align:middle;margin-right:8px}
+.sign-no::after{content:"";width:16px;height:4px;background:var(--barrier);transform:rotate(-45deg)}
+.road{position:relative}
+.road-car svg{width:100%;height:100%;display:block}
+.road-car{position:absolute;z-index:2;top:-4px;width:34px;height:20px;transform:translateX(-50%);transition:left .5s cubic-bezier(.4,0,.2,1);color:var(--sign);filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.done-art{width:180px;max-width:100%;height:auto;display:block;margin-bottom:6px}
+.done-art .car{animation:carIn .9s cubic-bezier(.2,.8,.2,1) both}
+.barrier{width:120px;height:auto;display:block;margin-bottom:4px}
+.barrier .lamp{animation:blink 1.4s steps(1) infinite}
+.layers{display:grid;grid-template-rows:repeat(4,auto);margin-top:24px;border-radius:8px;overflow:hidden;font:600 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase}
+.layers span{display:flex;align-items:center;padding-left:max(16px,env(safe-area-inset-left,0px))}
+.layers .l1{height:22px;background:#2B3337;color:#C9D2D5}
+.layers .l2{height:18px;background:repeating-linear-gradient(45deg,#6F7470 0 4px,#7D827D 4px 8px);color:#F2F4F3}
+.layers .l3{height:18px;background:radial-gradient(circle,#B8A57A 1px,transparent 1.5px) 0 0/6px 6px,#CDBB8F;color:#4A3E22}
+.layers .l4{height:16px;background:#8C6F4E;color:#F3E9DC}
+.foot-brand{display:flex;align-items:center;gap:12px}
+.foot-brand img{height:46px;width:auto;filter:var(--logo-filter)}
+body .admin-link{background:var(--sign);color:var(--sign-ink)}
+@media (min-width:901px){body .rail{border-left:3px dashed var(--line);padding-left:6px}}
+.pdf-logo{height:46px;width:auto;background:#fff;border-radius:6px;padding:4px 6px;float:right}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .qr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:700px){.qr-grid{grid-template-columns:1fr}}
@@ -73,8 +123,9 @@ input[type="email"],input[type="password"]{width:100%;padding:11px 12px;border:1
    survey progress is drawn as lane dashes (one dash = one step); admin = side rail + working area. */
 :root{
   --bg:#EEF2F1; --surface:#FFFFFF; --surface-2:#E4EAE9; --ink:#14212A; --muted:#55666F; --line:#CFD9D8;
-  --sign:#1A5C9C; --sign-ink:#FFFFFF; --sign-soft:#DDE9F5;
-  --c2:#0E7765; --c2-soft:#D5EDE8;
+  --sign:#08807F; --sign-ink:#FFFFFF; --sign-soft:#DCF1F0;
+  --c2:#3D6590; --c2-soft:#E1EAF4;
+  --logo-filter:none; --road-edge:#F4F6F5; --barrier:#C8352B;
   --marking:#E0A100; --marking-ink:#1B1400;
   --asphalt:#1C2529; --asphalt-2:#273237; --asphalt-ink:#EEF2F1; --asphalt-muted:#A8B5B9;
   --ok:#2B7749; --ok-soft:#DCEFE2; --warn:#9A5A00; --warn-soft:#FBEBD0; --bad:#B42318; --bad-soft:#FBE2DF;
@@ -86,8 +137,9 @@ input[type="email"],input[type="password"]{width:100%;padding:11px 12px;border:1
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0F1517; --surface:#162024; --surface-2:#1F2B30; --ink:#E3EAEB; --muted:#93A4AA; --line:#2B393E;
-    --sign:#5EA5EA; --sign-ink:#071827; --sign-soft:#15304A;
-    --c2:#45C1AA; --c2-soft:#103932;
+    --sign:#3CC7C1; --sign-ink:#042423; --sign-soft:#0F302F;
+    --c2:#8EB4DE; --c2-soft:#1A2C40;
+    --logo-filter:brightness(0) invert(1); --road-edge:#DDE5E4; --barrier:#E8574C;
     --marking:#F0BE2E; --marking-ink:#1B1400;
     --asphalt:#0A0F11; --asphalt-2:#141C1F; --asphalt-ink:#E3EAEB; --asphalt-muted:#8E9FA5;
     --ok:#5DC48B; --ok-soft:#12321F; --warn:#F1A94A; --warn-soft:#3A2911; --bad:#F2877B; --bad-soft:#3E1C18;
@@ -96,8 +148,9 @@ input[type="email"],input[type="password"]{width:100%;padding:11px 12px;border:1
 }
 :root[data-theme="dark"]{
   --bg:#0F1517; --surface:#162024; --surface-2:#1F2B30; --ink:#E3EAEB; --muted:#93A4AA; --line:#2B393E;
-  --sign:#5EA5EA; --sign-ink:#071827; --sign-soft:#15304A;
-  --c2:#45C1AA; --c2-soft:#103932;
+  --sign:#3CC7C1; --sign-ink:#042423; --sign-soft:#0F302F;
+  --c2:#8EB4DE; --c2-soft:#1A2C40;
+  --logo-filter:brightness(0) invert(1); --road-edge:#DDE5E4; --barrier:#E8574C;
   --marking:#F0BE2E; --marking-ink:#1B1400;
   --asphalt:#0A0F11; --asphalt-2:#141C1F; --asphalt-ink:#E3EAEB; --asphalt-muted:#8E9FA5;
   --ok:#5DC48B; --ok-soft:#12321F; --warn:#F1A94A; --warn-soft:#3A2911; --bad:#F2877B; --bad-soft:#3E1C18;
@@ -511,6 +564,9 @@ const I = {
   moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
   shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>',
   lock: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+  car: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 38l5-14a6 6 0 0 1 5.6-4h22.8a6 6 0 0 1 5.6 4l5 14"/><rect x="7" y="36" width="50" height="14" rx="4"/><circle cx="17" cy="43" r="3"/><circle cx="47" cy="43" r="3"/><path d="M12 50v5M52 50v5M22 30h20"/></svg>',
+  layers: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" aria-hidden="true"><path d="M6 20h52v8H6z" fill="currentColor" fill-opacity=".85"/><path d="M6 28h52v9H6z"/><path d="M6 37h52v9H6z" stroke-dasharray="3 4"/><path d="M6 46h52v8H6z"/><path d="M32 6v10M27 11l5 5 5-5" stroke-linecap="round"/></svg>',
+  carTop: '<svg viewBox="0 0 34 20" aria-hidden="true"><rect x="1" y="2" width="32" height="16" rx="6" fill="currentColor"/><rect x="20" y="4.5" width="7" height="11" rx="2" fill="#0B1B22" opacity=".55"/><rect x="7" y="4.5" width="5" height="11" rx="2" fill="#0B1B22" opacity=".4"/><circle cx="32" cy="5" r="1.4" fill="#FFE27A"/><circle cx="32" cy="15" r="1.4" fill="#FFE27A"/></svg>',
   mark: '<svg viewBox="0 0 40 40" width="38" height="38" aria-hidden="true"><rect width="40" height="40" rx="9" fill="var(--sign)"/><path d="M16.5 8h7l6.5 26H10z" fill="var(--sign-ink)" opacity=".92"/><path d="M19.3 11h1.4l.3 4h-2zM19 18h2l.4 5h-2.8zM18.6 26h2.8l.5 6h-3.8z" fill="var(--marking)"/></svg>'
 };
 
@@ -586,7 +642,7 @@ function header(){
   const nav = [['home','Бош саҳифа'],['results','Натижалар'],['about','Лойиҳа ҳақида'],['privacy','Махфийлик']];
   const dark = (document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
   return `<header class="top"><div class="wrap top-in">
-    <a class="brand" href="#home">${I.mark}<span><b>${BRAND}</b><small>${T('Республика аноним илмий сўров платформаси')}</small></span></a>
+    <a class="brand" href="#home"><img class="brand-logo" src="emblem.png" alt="UzDorNII" width="55" height="44"><span><b>${BRAND}</b><small>UZDORNII.UZ · ${T('аноним илмий сўров')}</small></span></a>
     <nav class="nav" aria-label="${T('Асосий меню')}">${nav.map(([k,l]) => `<a href="#${k}" ${r===k || (k==='home' && (r==='citizen'||r==='expert')) ? 'aria-current="page"' : ''}>${T(l)}</a>`).join('')}</nav>
     <div class="tools">
       <div class="seg" role="group" aria-label="${T('Ёзув')}"><button data-act="script" data-v="lat" aria-pressed="${S.script==='lat'}">Lotin</button><button data-act="script" data-v="cyr" aria-pressed="${S.script==='cyr'}">Кирилл</button></div>
@@ -596,8 +652,9 @@ function header(){
   </div></header>`;
 }
 function footer(){
-  return `<footer class="foot"><div class="wrap foot-in">
-    <span>${BRAND} · ${T('Автомобил йўллари илмий-тадқиқот институти ташаббуси')} · 2026</span>
+  return `<div class="layers" aria-hidden="true" style="border-radius:0;margin-top:0"><span class="l1">${T('Асфальтбетон')}</span><span class="l2">${T('Асос (шағал)')}</span><span class="l3">${T('Қум қатлами')}</span><span class="l4">${T('Грунт')}</span></div>
+  <footer class="foot"><div class="wrap foot-in">
+    <span class="foot-brand"><img src="uzdornii-logo.png" alt="UzDorNII" width="48" height="46"><span>${BRAND} · ${T('Автомобил йўллари илмий-тадқиқот институти ташаббуси')} · 2026<br><a href="https://uzdornii.uz" target="_blank" rel="noopener">uzdornii.uz</a></span></span>
     <span>${T('Пилот версия')} ${esc(cfgVersion())} · <a href="#privacy">${T('Махфийлик сиёсати')}</a> · <a href="#admin">${T('Админ кириши')}</a></span>
   </div></footer>`;
 }
@@ -606,23 +663,24 @@ function viewHome(){
   const c = SURVEYS.citizen.length, e = SURVEYS.expert.length;
   const card = (aud, title, items, mins, cls) => {
     const open = audOpen(aud);
-    return `<article class="card aud">
+    return `<article class="card aud ${cls === 'c2' ? 'c2' : ''}"><span class="aud-ico">${aud === 'citizen' ? I.car : I.layers}</span>
       <span class="tag ${cls}"><span class="dot"></span>${T(aud==='citizen' ? 'Аҳоли учун · 18+' : 'Соҳа мутахассислари учун')}</span>
       <h3>${T(title)}</h3>
       <div class="meta"><span><b class="num">${qs(aud).length}</b> ${T('савол')}</span><span>≈ <b class="num">${mins}</b> ${T('дақиқа')}</span><span>${open ? `<span class="tag ok">${T('Очиқ')}</span>` : `<span class="tag bad">${T('Ёпилган')}</span>`}</span></div>
       <ul>${items.map(i => `<li>${T(i)}</li>`).join('')}</ul>
-      <div class="row"><a class="btn ${aud==='citizen'?'btn-primary':'btn-ghost'}" href="#${aud}">${T(aud==='citizen' ? 'Аҳоли сўровини бошлаш' : 'Мутахассис сўровини бошлаш')}</a></div>
+      <div class="row"><a class="btn btn-primary btn-go" href="#${aud}">${T(aud==='citizen' ? 'Аҳоли сўровини бошлаш' : 'Мутахассис сўровини бошлаш')}</a></div>
     </article>`;
   };
   const sm = S.summary;
   const smN = sm ? ['citizen','expert'].map(a => sm.audiences?.[a]?.N) : null;
   return `
-  <section class="hero"><div class="wrap hero-in">
+  <section class="hero"><div class="hero-art" aria-hidden="true"><svg viewBox="0 0 600 420" preserveAspectRatio="xMidYMax slice"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4a50" stop-opacity="0"/><stop offset=".35" stop-color="#3a4a50" stop-opacity=".7"/><stop offset="1" stop-color="#46575d"/></linearGradient><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="1"/></linearGradient><mask id="m"><rect width="600" height="420" fill="url(#fade)"/></mask></defs><g mask="url(#m)"><path d="M285 40h30l250 380H35z" fill="url(#hg)"/><path d="M285 40L35 420M315 40l250 380" stroke="#E7ECEB" stroke-width="5"/><path class="cl" d="M300 40V420" stroke="#E0A100" stroke-width="7"/><g fill="#E7ECEB"><rect x="232" y="150" width="6" height="16" rx="1"/><rect x="176" y="232" width="9" height="24" rx="1.5"/><rect x="96" y="352" width="13" height="34" rx="2"/><rect x="362" y="150" width="6" height="16" rx="1"/><rect x="415" y="232" width="9" height="24" rx="1.5"/><rect x="491" y="352" width="13" height="34" rx="2"/></g><g fill="#E0A100"><rect x="232" y="150" width="6" height="5"/><rect x="176" y="232" width="9" height="7"/><rect x="96" y="352" width="13" height="10"/><rect x="362" y="150" width="6" height="5"/><rect x="415" y="232" width="9" height="7"/><rect x="491" y="352" width="13" height="10"/></g></g></svg></div><div class="wrap hero-in">
     <div>
+      <img class="hero-logo" src="uzdornii-logo.png" alt="UzDorNII" width="67" height="64">
       <div class="eyebrow">${T('Аноним илмий сўров · 2026')}</div>
       <h1>${T('Йўллар ҳақидаги фикрингиз илмий тадқиқотга айланади')}</h1>
       <p class="lead">${T('Аҳоли кузатувлари ва йўл хўжалиги мутахассислари тажрибаси алоҳида йиғилади, илмий жиҳатдан таҳлил қилинади ва тадқиқотлар учун устуворликларга айланади. Исм, телефон ёки манзил сўралмайди.')}</p>
-      <div class="row">${S.link.audience !== 'expert' ? `<a class="btn btn-mark" href="#citizen">${T('Аҳоли сифатида жавоб бериш')}</a>` : ''}${S.link.audience !== 'citizen' ? `<a class="btn ${S.link.audience === 'expert' ? 'btn-mark' : 'btn-ghost'}" href="#expert">${T('Мутахассис сифатида')}</a>` : ''}</div>
+      <div class="row">${S.link.audience !== 'expert' ? `<a class="btn btn-mark btn-go" href="#citizen">${T('Аҳоли сифатида жавоб бериш')}</a>` : ''}${S.link.audience !== 'citizen' ? `<a class="btn ${S.link.audience === 'expert' ? 'btn-mark' : 'btn-ghost'}" href="#expert">${T('Мутахассис сифатида')}</a>` : ''}</div>
     </div>
     <div class="posts">
       <div class="post"><b class="num">14</b><span>${T('ҳудуд: Қорақалпоғистон, 12 вилоят, Тошкент шаҳри')}</span></div>
@@ -652,7 +710,7 @@ function viewHome(){
 
   <section class="section"><div class="wrap split">
     <div class="card panel">
-      <h3>${T('Сиздан сўралмайди')}</h3>
+      <h3><span class="sign-no" aria-hidden="true"></span>${T('Сиздан сўралмайди')}</h3>
       <div class="nolist">${['Ф.И.Ш.','Телефон','ЖШШИР','Паспорт','Аниқ манзил','Ташкилот номи','Аккаунт ёки OneID'].map(x => `<span>${T(x)}</span>`).join('')}</div>
       <p class="muted" style="margin-top:14px;font-size:14px">${T('Ҳудудни кўрсатмаслик мумкин. Стаж ва фаолият йўналиши кенг тоифаларда сўралади.')}</p>
     </div>
@@ -683,7 +741,7 @@ function viewSurvey(){
   const sv = S.sv, aud = sv.aud, steps = stepsOf(aud);
   const title = aud === 'citizen' ? 'Аҳоли сўрови' : 'Мутахассислар сўрови';
   const total = steps.length + 1;
-  const road = cur => `<div class="road" aria-hidden="true"><div class="road-track">${Array.from({length: total}, (_, i) => `<span class="dash ${i < cur ? 'done' : i === cur ? 'now' : ''}"></span>`).join('')}</div>
+  const road = cur => `<div class="road" aria-hidden="true"><span class="road-car" style="left:calc(12px + (100% - 24px) * ${((cur + 0.5) / total).toFixed(4)})">${I.carTop}</span><div class="road-track">${Array.from({length: total}, (_, i) => `<span class="dash ${i < cur ? 'done' : i === cur ? 'now' : ''}"></span>`).join('')}</div>
     <div class="road-lbl"><span>KM ${pad(Math.min(cur+1,total))} / ${pad(total)}</span><span>${cur < steps.length ? T('Босқич') + ' ' + (cur+1) : T('Текшириш')}</span></div></div>`;
   const writeNote = !SB_OK ? `<div class="notice" style="margin-bottom:16px"><span>${I.lock}</span><div><b>${T('Намойиш режими.')}</b> ${T('Платформа ҳали маълумотлар базасига уланмаган, шунинг учун жавоблар сақланмайди.')}</div></div>` : '';
 
@@ -707,7 +765,7 @@ function viewSurvey(){
         <label class="check"><input type="checkbox" id="ack" data-act="ack" ${sv.ack ? 'checked' : ''}><span>${T('Изоҳни ўқидим ва ихтиёрий равишда иштирок этаман')}</span></label>
         ${sv.errors._ack ? `<div class="err">${T('Давом этиш учун изоҳни тасдиқланг.')}</div>` : ''}
       </div>
-      <div class="sv-nav"><a class="btn btn-ghost" href="#home">${T('Бош саҳифага қайтиш')}</a><button class="btn btn-primary" data-act="start" ${!open ? 'disabled' : ''}>${T('Сўровни бошлаш')}</button></div>
+      <div class="sv-nav"><a class="btn btn-ghost" href="#home">${T('Бош саҳифага қайтиш')}</a><button class="btn btn-primary btn-go" data-act="start" ${!open ? 'disabled' : ''}>${T('Сўровни бошлаш')}</button></div>
     </div></div>`;
   }
   if (sv.stage === 'step'){
@@ -716,7 +774,7 @@ function viewSurvey(){
       <div class="sv-head"><div><div class="eyebrow">${T(title)}</div><h1>${T('Босқич')} ${sv.step+1} / ${steps.length}</h1></div><span class="muted" style="font-size:14px"><span class="req">*</span> ${T('мажбурий савол')}</span></div>
       ${road(sv.step)}${writeNote}
       ${st.map((q,i) => qBlock(q, base + i, sv)).join('')}
-      <div class="sv-nav"><button class="btn btn-ghost" data-act="prev">${T(sv.step === 0 ? 'Изоҳга қайтиш' : 'Олдинги босқич')}</button><button class="btn btn-primary" data-act="next">${T(sv.step === steps.length - 1 ? 'Жавобларни текшириш' : 'Кейинги босқич')}</button></div>
+      <div class="sv-nav"><button class="btn btn-ghost" data-act="prev">${T(sv.step === 0 ? 'Изоҳга қайтиш' : 'Олдинги босқич')}</button><button class="btn btn-primary btn-go" data-act="next">${T(sv.step === steps.length - 1 ? 'Жавобларни текшириш' : 'Кейинги босқич')}</button></div>
     </div></div>`;
   }
   if (sv.stage === 'review'){
@@ -734,7 +792,7 @@ function viewSurvey(){
   }
   // done
   return `<div class="wrap"><div class="sv">
-    <div class="card done-card">
+    <div class="card done-card"><svg class="done-art" viewBox="0 0 180 70" aria-hidden="true"><rect x="0" y="44" width="180" height="22" rx="4" fill="var(--asphalt)"/><path d="M8 55h18M40 55h18M72 55h18M104 55h18" stroke="var(--marking)" stroke-width="3"/><g class="car"><rect x="118" y="30" width="34" height="16" rx="5" fill="var(--sign)"/><path d="M124 30l5-8h14l5 8" fill="var(--sign)"/><circle cx="126" cy="47" r="4" fill="#1b2328"/><circle cx="145" cy="47" r="4" fill="#1b2328"/></g><path d="M162 10v48" stroke="var(--ink)" stroke-width="2.5"/><path d="M163 11h14v12h-14z" fill="var(--ink)"/><path d="M163 11h4v4h-4zM171 11h4v4h-4zM167 15h4v4h-4zM175 15h2v4h-2zM163 19h4v4h-4zM171 19h4v4h-4z" fill="var(--surface)"/></svg>
       <span class="tag ${sv.saved ? 'ok' : 'warn'}"><span class="dot"></span>${T(sv.saved ? 'Жавоблар қабул қилинди' : 'Кўриб чиқиш режими')}</span>
       <h1>${T('Иштирокингиз учун раҳмат!')}</h1>
       <p class="muted" style="max-width:56ch">${T(sv.saved ? 'Жавобларингиз аноним ҳолда сақланди. Улар бошқа жавоблар билан бирга умумлаштирилган ҳолда таҳлил қилинади.' : 'Ушбу кўринишда жавоблар базага сақланмади. Сўровда ҳақиқий иштирок этиш учун тадқиқот гуруҳи берган ҳаволадан фойдаланинг.')}</p>
@@ -1248,7 +1306,7 @@ function loadLib(k){
   return libP[k] || (libP[k] = new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = LIBS[k]; sc.onload = res; sc.onerror = () => { delete libP[k]; rej(new Error('lib ' + k)); }; document.head.appendChild(sc); }));
 }
 const fileBase = () => 'yol-ilmi-hisobot-' + todayBucket();
-const C_CIT = '#1A5C9C', C_EXP = '#0E7765';
+const C_CIT = '#08807F', C_EXP = '#3D6590';
 async function runExport(kind){
   if (S.xBusy) return;
   S.xErr = ''; S.xBusy = { pdf: tt('PDF ҳисобот'), docx: 'Word', xlsx: 'Excel' }[kind]; render();
@@ -1372,7 +1430,7 @@ async function exportPdf(){
   const kpi = (l, v) => `<div class="pk"><span>${esc(l)}</span><b>${esc(v)}</b></div>`;
   const lc = completed('citizen'), le = completed('expert');
   const regs = new Set(completed().filter(r => r.region != null).map(r => r.region)).size;
-  add(`<div class="pdf-cover"><div class="pdf-brand">YO‘L ILMI</div><h1>${T('Аноним илмий сўров натижалари')}</h1><p>${T('Автомобил йўллари илмий-тадқиқот институти')} · ${dmy(todayBucket())} · ${T('Версия')} ${esc(cfgVersion())}</p></div>
+  add(`<div class="pdf-cover"><img class="pdf-logo" src="emblem.png" alt=""><div class="pdf-brand">YO‘L ILMI · UZDORNII.UZ</div><h1>${T('Аноним илмий сўров натижалари')}</h1><p>${T('Автомобил йўллари илмий-тадқиқот институти')} · ${dmy(todayBucket())} · ${T('Версия')} ${esc(cfgVersion())}</p></div>
     <div class="pk-row">${kpi(tt('Аҳоли жавоблари'), fmt(lc.length))}${kpi(tt('Мутахассис жавоблари'), fmt(le.length))}${kpi(tt('Ҳудуд қамрови'), regs + ' / 14')}${kpi(tt('Тадқиқот йўналишлари'), fmt(S.topics.length))}</div>`);
   for (const aud of ['citizen','expert']){
     const list = completed(aud), f = keyFindings(aud), color = aud === 'citizen' ? C_CIT : C_EXP;
@@ -1448,7 +1506,7 @@ async function toggleLink(tok){
 }
 function viewLocked(){
   if (!S.link.checked) return `<div class="wrap"><div class="card empty-state" style="margin-block:56px"><h3>${T('Юкланмоқда…')}</h3></div></div>`;
-  return `<div class="wrap"><div class="card login" style="max-width:520px">${I.lock}
+  return `<div class="wrap"><div class="card login" style="max-width:520px"><svg class="barrier" viewBox="0 0 120 56" aria-hidden="true"><rect x="6" y="20" width="10" height="34" rx="2" fill="var(--muted)"/><rect x="104" y="20" width="10" height="34" rx="2" fill="var(--muted)"/><rect x="2" y="16" width="116" height="14" rx="3" fill="#fff" stroke="var(--line)"/><path d="M14 16l-8 14M34 16l-8 14M54 16l-8 14M74 16l-8 14M94 16l-8 14M114 16l-8 14" stroke="var(--barrier)" stroke-width="8"/><circle class="lamp" cx="11" cy="9" r="5" fill="#F2B705"/><circle class="lamp" cx="109" cy="9" r="5" fill="#F2B705" style="animation-delay:.7s"/></svg>
     <div class="eyebrow">${T('Ёпиқ сўров')}</div><h1>${T('Кириш фақат таклиф ҳаволаси орқали')}</h1>
     <p class="muted">${S.link.token ? T('Бу ҳавола фаол эмас ёки муддати тугаган. Сизга ҳавола юборган ташкилотчига мурожаат қилинг.') : T('Сўровда қатнашиш учун тадқиқот гуруҳи юборган махсус ҳавола ёки QR-коддан фойдаланинг.')}</p>
   </div></div>`;
