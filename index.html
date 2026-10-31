@@ -464,7 +464,19 @@ tr:last-child td{border-bottom:0}
 .rail button:hover{background:var(--surface-2);color:var(--ink)}
 .rail button[aria-current="true"]{background:var(--surface);color:var(--ink);box-shadow:inset 3px 0 0 var(--sign)}
 .rail .cnt{font:12px var(--f-mono);color:var(--muted)}
-@media (max-width:900px){.adm{grid-template-columns:1fr;gap:16px}.rail{position:static;display:flex;overflow-x:auto;gap:4px;padding-bottom:4px}.rail .eyebrow{display:none}.rail button{white-space:nowrap;flex-shrink:0}.rail button[aria-current="true"]{box-shadow:inset 0 -3px 0 var(--sign)}}
+.rail{max-height:calc(100vh - 110px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.rail-m{display:none}
+@media (max-width:900px){.adm{grid-template-columns:1fr;gap:16px}.rail{display:none}
+  .rail-m{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+  .rail-m .rm-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .rail-m .rm-g,.rail-m .rm-t{display:flex;flex-wrap:wrap;gap:6px}
+  .rail-m .rm-g button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 12px;font:600 13px var(--f-body);color:var(--muted)}
+  .rail-m .rm-g button[aria-current="true"]{background:var(--sign);border-color:var(--sign);color:var(--sign-ink,#fff)}
+  .rail-m .rm-t{border-top:1px dashed var(--line);padding-top:10px}
+  .rail-m .rm-t button{border:0;background:var(--surface-2);border-radius:8px;padding:8px 11px;font:500 13px var(--f-body);color:var(--ink);display:inline-flex;gap:6px;align-items:center}
+  .rail-m .rm-t button[aria-current="true"]{box-shadow:inset 0 -3px 0 var(--sign);font-weight:700}
+  .rail-m .cnt{font:11px var(--f-mono);background:var(--sign);color:var(--sign-ink,#fff);border-radius:999px;padding:1px 6px}
+}
 .adm-main{display:grid;gap:18px;min-width:0;align-content:start}
 .adm-h{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
 .adm-h h1{font:700 24px/1.2 var(--f-display)}
@@ -1123,8 +1135,14 @@ function viewAdmin(){
   const rail = `<nav class="rail" aria-label="${T('Админ бўлимлари')}"><div class="eyebrow">${T('Бошқарув панели')}</div>${ADM_GROUPS.map(([g, keys]) => `<div class="grp">${T(g)}</div>` + keys.map(k => { const l = ADM_TABS.find(t => t[0] === k)[1]; const c = k === 'texts' ? newTexts : k === 'roadrep' ? S.reports.filter(x => x.status === 'new').length : 0; return `<button data-act="admTab" data-v="${k}" aria-current="${tab===k}"><span>${T(l)}</span>${c ? `<span class="cnt">${c}</span>` : ''}</button>`; }).join('')).join('')}
     <div style="padding:14px 12px 0;display:grid;gap:8px;font-size:13px" class="muted"><span style="overflow-wrap:anywhere">${esc(S.email)}</span><span>${T('Янгиланди')}: ${S.loadedAt ? esc(dt(S.loadedAt)).slice(-5) : '—'}</span>
       <div class="row"><button class="btn btn-ghost btn-sm" data-act="refresh" ${S.loading ? 'disabled' : ''}>${T(S.loading ? 'Юкланмоқда…' : 'Янгилаш')}</button><button class="btn btn-ghost btn-sm" data-act="logout">${T('Чиқиш')}</button></div></div></nav>`;
+  const cntOf = k => k === 'texts' ? newTexts : k === 'roadrep' ? S.reports.filter(x => x.status === 'new').length : 0;
+  const curG = (ADM_GROUPS.find(g => g[1].includes(tab)) || ADM_GROUPS[0]);
+  const railM = `<nav class="rail-m" aria-label="${T('Админ бўлимлари')}">
+    <div class="rm-top"><span>${esc(S.email)}</span><span class="row" style="gap:6px"><button class="btn btn-ghost btn-sm" data-act="refresh" ${S.loading ? 'disabled' : ''}>${T(S.loading ? 'Юкланмоқда…' : 'Янгилаш')}</button><button class="btn btn-ghost btn-sm" data-act="logout">${T('Чиқиш')}</button></span></div>
+    <div class="rm-g">${ADM_GROUPS.map(([g, keys]) => { const c = keys.reduce((x, k) => x + cntOf(k), 0); return `<button data-act="admTab" data-v="${keys[0]}" aria-current="${curG[0] === g}">${T(g)}${c ? ` <span class="cnt">${c}</span>` : ''}</button>`; }).join('')}</div>
+    <div class="rm-t">${curG[1].map(k => `<button data-act="admTab" data-v="${k}" aria-current="${tab === k}">${T(ADM_TABS.find(t => t[0] === k)[1])}${cntOf(k) ? `<span class="cnt">${cntOf(k)}</span>` : ''}</button>`).join('')}</div></nav>`;
   const fn = { map: admMap, compare: admCompare, cross: admCross, trend: admTrend, matrix: admMatrix, commission: admCommission, roadrep: admRoadReports, responses: admResponses, links: admLinks, overview: admOverview, analysis: admAnalysis, regions: admRegions, texts: admTexts, topics: admTopics, reports: admReports, config: admConfig, audit: admAudit }[tab];
-  return `<div class="wrap"><div class="adm">${rail}<div class="adm-main">${S.loadErr ? `<div class="notice bad"><div><b>${T('Маълумотларни юклаб бўлмади.')}</b> ${esc(S.loadErr)}</div></div>` : ''}${fn()}</div></div></div>`;
+  return `<div class="wrap"><div class="adm">${rail}${railM}<div class="adm-main">${S.loadErr ? `<div class="notice bad"><div><b>${T('Маълумотларни юклаб бўлмади.')}</b> ${esc(S.loadErr)}</div></div>` : ''}${fn()}</div></div></div>`;
 }
 const audSeg = (key, v) => `<div class="tabs" role="tablist">${['citizen','expert'].map(a => `<button role="tab" data-act="admSet" data-k="${key}" data-v="${a}" aria-selected="${v===a}">${T(AUD_LABEL[a])}</button>`).join('')}</div>`;
 
