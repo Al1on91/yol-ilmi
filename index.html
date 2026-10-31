@@ -157,6 +157,23 @@ body .admin-link{background:var(--sign);color:var(--sign-ink)}
 .rr-photos img{width:100%;height:100%;object-fit:cover}
 .funnel td .bt{height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;min-width:80px}
 .funnel td .bf{height:100%;background:var(--sign)}
+.part{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:900px){.part{grid-template-columns:1fr}}
+.part-total{display:flex;align-items:baseline;gap:10px}
+.part-total b{font:700 52px/1 var(--f-display);color:var(--sign);letter-spacing:-.02em}
+.part-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 18px}
+.part-split div{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.part-split b{display:block;font:700 22px var(--f-display)}
+.part-split span{font-size:12px;color:var(--muted)}
+.part-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.part-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:14px}
+.part-list .bt{grid-column:1/-1;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.part-list .bf{display:block;height:100%;background:var(--sign);border-radius:3px}
+.live{display:inline-flex;align-items:center;gap:6px;font:600 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sign)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--sign);animation:livep 1.6s ease-in-out infinite}
+@keyframes livep{0%,100%{opacity:1}50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.live i{animation:none}}
+.part .uzmap path.rg:hover{cursor:default}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .qr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:700px){.qr-grid{grid-template-columns:1fr}}
@@ -540,7 +557,7 @@ const S = {
   adm: { tab: 'overview', aud: 'citizen', region: 'all', from: '', to: '', hideSmall: true,
          mapMetric: 'cn', cmpOpen: '', xAud: 'citizen', xRow: 'c02', xCol: 'c04', trAud: 'citizen', trQ: 'c04', trBy: 'month', rrStatus: 'all', rAud: 'citizen', rPage: 0, rSearch: '', wordFull: false, tAud: 'citizen', tStatus: 'new', tTheme: '', qeAud: 'citizen', exportWeek: true, exportMerge: true },
   login: { email: '', err: '', busy: false },
-  xBusy: '', xErr: '', scores: [], reports: [], startRows: [], signed: {}, resMap: 'n',
+  xBusy: '', xErr: '', part: null, partAud: 'all', scores: [], reports: [], startRows: [], signed: {}, resMap: 'n',
   rp: { region: '', place: '', cat: '', desc: '', lat: null, lng: null, photos: [], contact: '', consent: false, err: '', busy: false, doneId: null, mapOn: false },
   link: { token: null, audience: null, checked: false, ok: false }, links: [], lf: { label: '', audience: '' }, qrOpen: {},
   tf: null, qe: {}, cfgDraft: null, ai: {}, aiBusy: false, aiErr: '', confirm: null, csvFallback: '',
@@ -774,12 +791,38 @@ function viewHome(){
     </div>
   </div></section>
 
+  ${partHTML()}
   <section class="section"><div class="wrap">
     <div class="card panel" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center">
       <div><div class="eyebrow">${T('Умумлаштирилган натижалар')}</div>
         <h3 style="margin:8px 0 4px">${sm ? T('Охирги эълон: ') + esc(dt(sm.published_at)) : T('Натижалар ҳали эълон қилинмаган')}</h3>
         <p class="muted">${sm ? T('Аҳоли: ') + (smN[0] != null ? fmt(smN[0]) : '&lt;10') + ' · ' + T('Мутахассислар: ') + (smN[1] != null ? fmt(smN[1]) : '&lt;10') + ' ' + T('жавоб') : T('Етарли жавоб йиғилгач, тадқиқот гуруҳи агрегат натижаларни шу ерда эълон қилади.')}</p></div>
       <a class="btn btn-ghost" href="#results">${T('Натижаларни кўриш')}</a>
+    </div>
+  </div></section>`;
+}
+
+function partHTML(){
+  if (!S.part) return '';
+  const a = S.partAud, rows = S.part.filter(r => a === 'all' || r.audience === a);
+  const c = new Array(NOREG + 1).fill(0); rows.forEach(r => c[r.region == null ? NOREG : r.region] += +r.n);
+  const tot = c.reduce((x, y) => x + y, 0), byA = k => S.part.filter(r => r.audience === k).reduce((x, r) => x + +r.n, 0);
+  const vals = c.slice(0, NOREG).map(v => v || undefined);
+  const top = REGIONS.map((r, i) => ({ name: tt(r), v: c[i] })).filter(x => x.v).sort((x, y) => y.v - x.v);
+  const max = Math.max(1, ...top.map(x => x.v)), covered = top.length;
+  const tab = (k, l) => `<button role="tab" data-act="partAud" data-v="${k}" aria-selected="${a === k}">${T(l)}</button>`;
+  return `<section class="section"><div class="wrap">
+    <div class="sec-head"><div><span class="live"><i></i>${T('Жонли кузатув')}</span><h2 style="margin-top:8px">${T('Ҳудудлар бўйича иштирок')}</h2>
+      <p class="muted" style="max-width:62ch">${T('Қайси ҳудуддан нечта киши сўровда қатнашгани. Фақат қатнашчилар сони кўрсатилади, жавоблар кўринмайди.')}</p></div>
+      <div class="tabs" role="tablist">${tab('all', 'Барчаси')}${tab('citizen', 'Аҳоли')}${tab('expert', 'Мутахассислар')}</div></div>
+    <div class="card panel part">
+      <div>${mapSVG(vals, { fmt: v => fmt(v) + ' ' + tt('қатнашчи'), noSmall: true, lo: tot ? '1' : '0', hi: fmt(max), min: 1, max })}</div>
+      <div>
+        <div class="part-total"><b>${fmt(tot)}</b><span class="muted">${T('қатнашчи')}</span></div>
+        <div class="part-split"><div><b>${fmt(byA('citizen'))}</b><span>${T('Аҳоли')}</span></div><div><b>${fmt(byA('expert'))}</b><span>${T('Мутахассислар')}</span></div></div>
+        <p class="muted" style="font-size:13px;margin:0 0 10px">${T('Қамров')}: <b>${covered} / ${NOREG}</b> ${T('ҳудуд')}</p>
+        ${top.length ? `<ul class="part-list">${top.slice(0, 7).map(x => `<li><span>${esc(x.name)}</span><b class="num">${fmt(x.v)}</b><span class="bt"><span class="bf" style="width:${(x.v / max * 100).toFixed(1)}%"></span></span></li>`).join('')}</ul>` : `<p class="muted">${T('Ҳали қатнашчилар йўқ. Биринчи бўлинг!')}</p>`}
+      </div>
     </div>
   </div></section>`;
 }
@@ -1533,7 +1576,7 @@ function mapSVG(vals, o = {}){
   const paths = UZ_MAP.regions.map(([i, d]) => { const v = vals[i]; const fill = v === undefined ? 'var(--surface-2)' : v === null ? 'url(#hatch)' : col(v);
     return `<path class="rg" d="${d}" fill="${fill}" ${o.click ? `data-act="mapRegion" data-v="${i}"` : ''}><title>${esc(tt(REGIONS[i]))}: ${v === undefined ? esc(tt('маълумот йўқ')) : v === null ? '&lt;10' : esc(f(v))}</title></path>`; }).join('');
   return `<svg class="uzmap" viewBox="${UZ_MAP.vb}" role="img" aria-label="${T('Ўзбекистон ҳудудлари харитаси')}"><defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--surface-2)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--line)" stroke-width="3"/></pattern></defs><path class="water" d="${UZ_MAP.aral}"/>${paths}</svg>
-    <div class="map-legend"><span>${esc(o.lo || f(min))}</span>${MAP_PAL.map(c => `<i style="background:${c}"></i>`).join('')}<span>${esc(o.hi || f(max))}</span><span class="sp"></span><i style="background:repeating-linear-gradient(45deg,var(--surface-2) 0 3px,var(--line) 3px 5px)"></i><span>&lt;10</span><span class="sp"></span><i style="background:var(--surface-2)"></i><span>${T('маълумот йўқ')}</span></div>
+    <div class="map-legend"><span>${esc(o.lo || f(min))}</span>${MAP_PAL.map(c => `<i style="background:${c}"></i>`).join('')}<span>${esc(o.hi || f(max))}</span>${o.noSmall ? '' : `<span class="sp"></span><i style="background:repeating-linear-gradient(45deg,var(--surface-2) 0 3px,var(--line) 3px 5px)"></i><span>&lt;10</span>`}<span class="sp"></span><i style="background:var(--surface-2)"></i><span>${T('маълумот йўқ')}</span></div>
     <div class="map-attr">${T('Харита асоси')}: svg-maps (CC BY 4.0)</div>`;
 }
 const MAP_METRICS = [['cn','Аҳоли жавоблари сони','citizen'],['en','Мутахассис жавоблари сони','expert'],['c04','Йўл ҳолати баҳоси (аҳоли, 1–5)','citizen'],['c08','Таъмирдан қониқиш (аҳоли, 1–5)','citizen'],['e08','Хом ашё истиқболи (мутахассис, 1–5)','expert']];
@@ -1875,6 +1918,11 @@ async function loadPublic(){
   ]);
   if (!c.error) S.config = c.data ? c.data.data : null;
   if (!s.error) S.summary = s.data ? s.data.data : null;
+  await loadParticipation();
+}
+async function loadParticipation(){
+  if (!sb) return;
+  try { const { data, error } = await sb.rpc('participation'); if (!error && data) S.part = data; } catch(e){}
 }
 async function checkAdmin(){
   S.isAdmin = false; S.role = '';
@@ -2086,6 +2134,7 @@ function onRoute(){
   if ((S.route === 'citizen' || S.route === 'expert') && (!S.sv || S.sv.aud !== S.route || S.sv.stage === 'done')) S.sv = newSurvey(S.route);
   if (S.route === 'admin' && S.isAdmin && !S.adminLogged){ S.adminLogged = true; audit('admin_open', ''); }
   if (S.route === 'admin' && S.isAdmin && Date.now() - S.loadedAt > 30000) loadAdmin();
+  if (S.route === 'home' && S.part) loadParticipation().then(() => { if (S.route === 'home') softRender(); });
   S.confirm = null;
   render(); scrollTop();
 }
@@ -2137,6 +2186,7 @@ document.addEventListener('click', e => {
   if (act === 'refresh') return void loadAdmin();
   if (act === 'qrdl') return qrDownload(v);
   if (act === 'mapRegion'){ S.adm.region = v; S.adm.aud = 'citizen'; S.adm.tab = 'analysis'; render(); scrollTop(); return; }
+  if (act === 'partAud'){ S.partAud = v; render(); return; }
   if (act === 'resMap'){ S.resMap = v; render(); return; }
   if (act === 'cmpTopic'){ const [t, c, e] = COMPARE[+v]; const ci = indicator('citizen', c), ei = indicator('expert', e); S.tf = { id: null, name: tt(t), evidence: tt('Аҳоли') + ': ' + Math.round(ci.p) + '% (n=' + ci.n + ', ' + ci.label + '). ' + tt('Мутахассислар') + ': ' + Math.round(ei.p) + '% (n=' + ei.n + ', ' + ei.label + ').', owner_role: OWNER_ROLES[0], status: 'proposal', themes: [], public: false, err: '' }; S.adm.tab = 'topics'; render(); scrollTop(); return; }
   if (act === 'scoreSave') return void saveScore(v);
