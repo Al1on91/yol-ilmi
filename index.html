@@ -1,0 +1,1529 @@
+<!doctype html>
+<html lang="uz-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YO‘L ILMI — anonim ilmiy so‘rov</title>
+<meta name="description" content="Avtomobil yo‘llari bo‘yicha aholi va mutaxassislar uchun respublika anonim ilmiy so‘rov platformasi.">
+<meta property="og:title" content="YO‘L ILMI — anonim ilmiy so‘rov">
+<meta property="og:description" content="Yo‘llar haqidagi fikringiz ilmiy tadqiqotga aylanadi. Ism, telefon yoki manzil so‘ralmaydi.">
+<meta name="theme-color" content="#1C2529">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%231A5C9C'/%3E%3Cpath d='M16.5 8h7l6.5 26H10z' fill='%23fff'/%3E%3Cpath d='M19.3 11h1.4l.3 4h-2zM19 18h2l.4 5h-2.8zM18.6 26h2.8l.5 6h-3.8z' fill='%23E0A100'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+html,body{margin:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+[hidden]{display:none!important}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.qr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:700px){.qr-grid{grid-template-columns:1fr}}
+.qr-box{display:grid;gap:10px;justify-items:start;padding:16px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r)}
+.qr-img{background:#fff;padding:10px;border-radius:8px;line-height:0}
+.qr-img img,.qr-img canvas{width:180px;height:180px}
+.linkline{font:13px var(--f-mono);overflow-wrap:anywhere;color:var(--ink)}
+.login{max-width:420px;margin:56px auto;padding:28px;display:grid;gap:14px}
+.login h1{font:700 22px/1.2 var(--f-display)}
+input[type="email"],input[type="password"]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);font-size:15px}
+/* Layout: sticky header → content column (max 1120px). Home opens on an asphalt band crossed by a lane marking;
+   survey progress is drawn as lane dashes (one dash = one step); admin = side rail + working area. */
+:root{
+  --bg:#EEF2F1; --surface:#FFFFFF; --surface-2:#E4EAE9; --ink:#14212A; --muted:#55666F; --line:#CFD9D8;
+  --sign:#1A5C9C; --sign-ink:#FFFFFF; --sign-soft:#DDE9F5;
+  --c2:#0E7765; --c2-soft:#D5EDE8;
+  --marking:#E0A100; --marking-ink:#1B1400;
+  --asphalt:#1C2529; --asphalt-2:#273237; --asphalt-ink:#EEF2F1; --asphalt-muted:#A8B5B9;
+  --ok:#2B7749; --ok-soft:#DCEFE2; --warn:#9A5A00; --warn-soft:#FBEBD0; --bad:#B42318; --bad-soft:#FBE2DF;
+  --f-display:'Unbounded','Golos Text',system-ui,sans-serif;
+  --f-body:'Golos Text',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
+  --r:10px; --r-lg:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1517; --surface:#162024; --surface-2:#1F2B30; --ink:#E3EAEB; --muted:#93A4AA; --line:#2B393E;
+    --sign:#5EA5EA; --sign-ink:#071827; --sign-soft:#15304A;
+    --c2:#45C1AA; --c2-soft:#103932;
+    --marking:#F0BE2E; --marking-ink:#1B1400;
+    --asphalt:#0A0F11; --asphalt-2:#141C1F; --asphalt-ink:#E3EAEB; --asphalt-muted:#8E9FA5;
+    --ok:#5DC48B; --ok-soft:#12321F; --warn:#F1A94A; --warn-soft:#3A2911; --bad:#F2877B; --bad-soft:#3E1C18;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1517; --surface:#162024; --surface-2:#1F2B30; --ink:#E3EAEB; --muted:#93A4AA; --line:#2B393E;
+  --sign:#5EA5EA; --sign-ink:#071827; --sign-soft:#15304A;
+  --c2:#45C1AA; --c2-soft:#103932;
+  --marking:#F0BE2E; --marking-ink:#1B1400;
+  --asphalt:#0A0F11; --asphalt-2:#141C1F; --asphalt-ink:#E3EAEB; --asphalt-muted:#8E9FA5;
+  --ok:#5DC48B; --ok-soft:#12321F; --warn:#F1A94A; --warn-soft:#3A2911; --bad:#F2877B; --bad-soft:#3E1C18;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+a{color:var(--sign)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--sign);outline-offset:2px;border-radius:4px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.eyebrow{font:600 12px/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:20px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex-shrink:0}
+.brand b{display:block;font:700 16px/1 var(--f-display);letter-spacing:.02em}
+.brand small{display:block;font-size:11px;color:var(--muted);margin-top:3px;max-width:210px;line-height:1.25}
+.nav{display:flex;gap:4px;flex:1;min-width:0}
+.nav a{padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:500;font-size:15px;white-space:nowrap}
+.nav a:hover{color:var(--ink);background:var(--surface-2)}
+.nav a[aria-current="page"]{color:var(--ink);background:var(--surface-2)}
+.tools{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;padding:2px;background:var(--bg)}
+.seg button{border:0;background:transparent;padding:5px 10px;border-radius:7px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.icon-btn{width:36px;height:36px;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+.icon-btn svg{width:18px;height:18px}
+.admin-link{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;background:var(--ink);color:var(--bg);text-decoration:none;font-size:13px;font-weight:600}
+.admin-link svg{width:15px;height:15px}
+@media (max-width:900px){
+  .top-in{flex-wrap:wrap;gap:10px;padding-block:10px}
+  .nav{order:3;flex-basis:100%;overflow-x:auto;margin:0 -4px;padding-bottom:2px}
+  .tools{margin-left:auto}
+  .brand small{display:none}
+}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:9px;border:1px solid transparent;font-weight:600;font-size:15px;text-decoration:none;line-height:1.2;transition:background .15s,border-color .15s}
+.btn-primary{background:var(--sign);color:var(--sign-ink)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-mark{background:var(--marking);color:var(--marking-ink)}
+.btn-danger{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn-sm{min-height:34px;padding:6px 12px;font-size:14px}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Hero */
+.hero{background:var(--asphalt);color:var(--asphalt-ink);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--asphalt-ink);opacity:.55}
+.hero-in{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px;padding-block:64px 72px;align-items:end}
+.hero .eyebrow{color:var(--marking)}
+.hero h1{font:700 clamp(30px,5vw,52px)/1.08 var(--f-display);letter-spacing:-.01em;margin:16px 0 18px}
+.hero p.lead{color:var(--asphalt-muted);font-size:18px;max-width:58ch}
+.hero .row{margin-top:28px}
+.hero .btn-ghost{color:var(--asphalt-ink);border-color:var(--asphalt-muted)}
+.hero .btn-ghost:hover{background:var(--asphalt-2)}
+.lane{position:absolute;left:0;right:0;bottom:22px;height:5px;background:repeating-linear-gradient(90deg,var(--marking) 0 56px,transparent 56px 96px);opacity:.9}
+.posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.post{background:var(--asphalt-2);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:14px 12px;border-top:4px solid var(--marking)}
+.post b{display:block;font:700 28px/1 var(--f-display)}
+.post span{display:block;margin-top:8px;font-size:13px;color:var(--asphalt-muted);line-height:1.3}
+@media (max-width:820px){.hero-in{grid-template-columns:1fr;gap:28px;padding-block:44px 60px}}
+
+/* Sections */
+.section{padding-block:56px}
+.section + .section{padding-top:0}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.sec-head h2{font:700 clamp(22px,3vw,30px)/1.15 var(--f-display)}
+.sec-head p{color:var(--muted);max-width:60ch;margin-top:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg)}
+.aud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.aud{padding:28px;display:flex;flex-direction:column;gap:14px}
+.aud .tag{align-self:flex-start}
+.aud h3{font:700 22px/1.2 var(--f-display)}
+.aud ul{margin:0;padding-left:18px;color:var(--muted)}
+.aud ul li{margin:3px 0}
+.aud .meta{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.aud .meta b{color:var(--ink)}
+.aud .row{margin-top:auto;padding-top:8px}
+@media (max-width:760px){.aud-grid{grid-template-columns:1fr}}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--surface-2);color:var(--ink)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.tag.sign{background:var(--sign-soft);color:var(--sign)}
+.tag.c2{background:var(--c2-soft);color:var(--c2)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;counter-reset:s;border-top:2px dashed var(--line);margin-top:8px}
+.steps li{list-style:none;padding:18px 16px 0 0;position:relative}
+.steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);display:block;font:600 13px var(--f-mono);color:var(--sign);margin-bottom:8px}
+.steps li::after{content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--sign);border:3px solid var(--bg)}
+.steps b{display:block;font-weight:600}
+.steps span{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+.steps{padding:0;margin-bottom:0}
+@media (max-width:760px){.steps{grid-template-columns:1fr;border-top:0;border-left:2px dashed var(--line);padding-left:20px}.steps li{padding:0 0 18px}.steps li::after{top:2px;left:-27px}}
+
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.panel{padding:24px}
+.panel h3{font:700 18px/1.25 var(--f-display);margin-bottom:12px}
+.nolist{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.nolist span{padding:6px 12px;border-radius:8px;border:1px dashed var(--line);text-decoration:line-through;text-decoration-color:var(--bad);color:var(--muted);font-size:14px}
+.checks{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.checks li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;font-size:15px}
+.checks li::before{content:"";width:18px;height:18px;margin-top:3px;border-radius:5px;background:var(--ok-soft);border:2px solid var(--ok)}
+.notice{display:flex;gap:12px;padding:14px 16px;border-radius:var(--r);background:var(--warn-soft);color:var(--ink);font-size:15px;border:1px solid transparent}
+.notice b{color:var(--warn)}
+.notice.info{background:var(--sign-soft)}
+.notice.info b{color:var(--sign)}
+.notice.bad{background:var(--bad-soft)}
+.notice.bad b{color:var(--bad)}
+
+/* Survey */
+.sv{max-width:820px;margin:0 auto;padding-block:36px 72px}
+.sv-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.sv-head h1{font:700 clamp(22px,3.4vw,32px)/1.15 var(--f-display)}
+.road{display:grid;gap:6px;margin:18px 0 26px}
+.road-track{display:flex;gap:8px;align-items:center;background:var(--asphalt);border-radius:8px;padding:12px 12px;position:relative}
+.road-track::before,.road-track::after{content:"";position:absolute;left:8px;right:8px;height:2px;background:var(--asphalt-ink);opacity:.35}
+.road-track::before{top:4px}.road-track::after{bottom:4px}
+.dash{flex:1;height:6px;border-radius:2px;background:var(--asphalt-2)}
+.dash.done{background:var(--marking)}
+.dash.now{background:var(--marking);opacity:.55;outline:2px solid var(--marking);outline-offset:2px}
+.road-lbl{display:flex;justify-content:space-between;font:600 12px var(--f-mono);color:var(--muted);letter-spacing:.06em}
+.q{padding:24px;margin-bottom:14px}
+.q-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
+.q-num{font:600 13px var(--f-mono);color:var(--sign);background:var(--sign-soft);border-radius:6px;padding:4px 7px;margin-top:2px}
+.q h3{font:600 18px/1.4 var(--f-body)}
+.req{color:var(--bad);margin-left:4px}
+.q-hint{color:var(--muted);font-size:14px;margin-top:6px}
+.q-body{margin-top:16px;padding-left:0}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:620px){.opts{grid-template-columns:1fr}}
+.opt{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;align-items:start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);cursor:pointer;font-size:15px;line-height:1.4;min-height:48px}
+.opt:hover{border-color:var(--sign)}
+.opt input{margin:2px 0 0;width:18px;height:18px;accent-color:var(--sign)}
+.opt:has(input:checked){border-color:var(--sign);background:var(--sign-soft)}
+.opt:has(input:disabled){opacity:.45;cursor:not-allowed}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.scale label{display:grid;place-items:center;height:56px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);font:700 20px var(--f-display);cursor:pointer}
+.scale label:hover{border-color:var(--sign)}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label:has(input:checked){background:var(--sign);color:var(--sign-ink);border-color:var(--sign)}
+.scale label:has(input:focus-visible){outline:2px solid var(--sign);outline-offset:2px}
+.scale-ends{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);margin-top:8px}
+.field{display:grid;gap:6px}
+.field label,.lbl{font-weight:600;font-size:14px}
+select,input[type="text"],input[type="date"],textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);font-size:15px}
+select:focus,input:focus,textarea:focus{border-color:var(--sign);outline:none;box-shadow:0 0 0 3px var(--sign-soft)}
+textarea{min-height:130px;resize:vertical;line-height:1.5}
+.count{font:12px var(--f-mono);color:var(--muted);text-align:right}
+.err{color:var(--bad);font-size:14px;font-weight:600;margin-top:10px}
+.q.has-err{border-color:var(--bad)}
+.sv-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:22px}
+.check{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;font-size:15px;cursor:pointer}
+.check input{width:18px;height:18px;margin-top:3px;accent-color:var(--sign)}
+.review dl{margin:0;display:grid;gap:0}
+.review .rv{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;padding:12px 0;border-top:1px solid var(--line)}
+.review dt{color:var(--muted);font-size:14px}
+.review dd{margin:0;font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.review .empty{color:var(--muted);font-weight:400;font-style:italic}
+.rv-step{display:flex;justify-content:space-between;align-items:center;margin:22px 0 4px}
+@media (max-width:620px){.review .rv{grid-template-columns:1fr;gap:4px}}
+.done-card{padding:40px 28px;text-align:left}
+.done-card h1{font:700 clamp(24px,4vw,34px)/1.15 var(--f-display);margin:12px 0}
+
+/* Results & charts */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{padding:16px 18px}
+.kpi .v{font:700 28px/1.1 var(--f-display);font-variant-numeric:tabular-nums;margin-top:6px}
+.kpi .s{font-size:13px;color:var(--muted);margin-top:4px}
+.qgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.qgrid{grid-template-columns:1fr}}
+.qc{padding:20px;min-width:0}
+.qc h4{font-weight:600;font-size:15px;line-height:1.4;margin:0 0 4px}
+.qc .nline{font:12px var(--f-mono);color:var(--muted);margin-bottom:14px}
+.bars{display:grid;gap:9px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:4px 10px;align-items:center;font-size:14px}
+.bar .bl{min-width:0;overflow-wrap:anywhere;line-height:1.3}
+.bar .bv{text-align:right;font:13px var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+.bar .bv b{color:var(--ink);font-weight:600}
+.bar .bt{grid-column:1 / -1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.bar .bf{height:100%;background:var(--sign);border-radius:4px}
+.c2 .bar .bf{background:var(--c2)}
+.hist{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:end}
+.hist .mean b{display:block;font:700 34px/1 var(--f-display)}
+.hist .mean span{font-size:13px;color:var(--muted)}
+.hcols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;align-items:end;height:110px}
+.hcol{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
+.hcol i{display:block;width:100%;background:var(--sign);border-radius:4px 4px 0 0;min-height:2px}
+.c2 .hcol i{background:var(--c2)}
+.hcol small{font:11px var(--f-mono);color:var(--muted)}
+.hx{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;text-align:center;font:600 12px var(--f-mono);color:var(--muted);margin-top:4px}
+.suppr{display:flex;gap:10px;align-items:center;padding:14px;border-radius:var(--r);background:var(--surface-2);color:var(--muted);font-size:14px}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.lt{color:var(--muted);font-family:var(--f-mono);font-size:13px}
+.tabs{display:inline-flex;gap:4px;padding:4px;background:var(--surface-2);border-radius:11px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:8px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.empty-state{padding:40px 28px;text-align:center;display:grid;gap:10px;justify-items:center}
+.empty-state h3{font:700 20px/1.25 var(--f-display)}
+.empty-state p{color:var(--muted);max-width:52ch}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* Prose pages */
+.prose{max-width:760px;padding-block:44px 72px}
+.prose h1{font:700 clamp(26px,4vw,38px)/1.12 var(--f-display);margin-bottom:16px}
+.prose h2{font:700 20px/1.25 var(--f-display);margin:34px 0 12px}
+.prose p,.prose li{color:var(--ink);font-size:16px}
+.prose p{margin:10px 0}
+.prose ul,.prose ol{padding-left:20px}
+.prose li{margin:6px 0}
+.kv{display:grid;grid-template-columns:200px minmax(0,1fr);border-top:1px solid var(--line)}
+.kv > *{padding:12px 0;border-bottom:1px solid var(--line)}
+.kv dt{color:var(--muted);font-size:14px;padding-right:16px}
+.kv dd{margin:0}
+@media (max-width:620px){.kv{grid-template-columns:1fr}.kv dt{border-bottom:0;padding-bottom:0}}
+
+/* Admin */
+.adm{display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px;padding-block:28px 72px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);align-self:start;display:grid;gap:2px}
+.rail .eyebrow{padding:0 12px 10px}
+.rail button{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:0;background:transparent;padding:9px 12px;border-radius:8px;font-weight:500;font-size:14px;color:var(--muted)}
+.rail button:hover{background:var(--surface-2);color:var(--ink)}
+.rail button[aria-current="true"]{background:var(--surface);color:var(--ink);box-shadow:inset 3px 0 0 var(--sign)}
+.rail .cnt{font:12px var(--f-mono);color:var(--muted)}
+@media (max-width:900px){.adm{grid-template-columns:1fr;gap:16px}.rail{position:static;display:flex;overflow-x:auto;gap:4px;padding-bottom:4px}.rail .eyebrow{display:none}.rail button{white-space:nowrap;flex-shrink:0}.rail button[aria-current="true"]{box-shadow:inset 0 -3px 0 var(--sign)}}
+.adm-main{display:grid;gap:18px;min-width:0;align-content:start}
+.adm-h{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.adm-h h1{font:700 24px/1.2 var(--f-display)}
+.filters{display:flex;gap:12px;flex-wrap:wrap;align-items:end;padding:16px}
+.filters .field{min-width:150px;flex:1}
+.filters .check{align-self:center}
+.chart-svg{width:100%;height:auto;display:block}
+.chart-svg text{fill:var(--muted);font:11px var(--f-mono)}
+.chart-svg .grid{stroke:var(--line);stroke-width:1}
+.txt{padding:18px;display:grid;gap:12px}
+.txt-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}
+.txt-body{font-size:15px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--sign);border-color:var(--sign);color:var(--sign-ink)}
+.chip.ai{border-style:dashed;border-color:var(--c2);color:var(--c2)}
+.chip .k{font-family:var(--f-mono);margin-left:4px;opacity:.8}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.formgrid .full{grid-column:1 / -1}
+@media (max-width:700px){.formgrid{grid-template-columns:1fr}}
+.topic{padding:18px;display:grid;gap:8px}
+.topic h4{margin:0;font-size:16px;font-weight:600}
+.qe{padding:16px;display:grid;gap:10px}
+.qe-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;z-index:50;max-width:calc(100% - 32px)}
+.foot{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:14px}
+.foot-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.copybox{width:100%;min-height:160px;font:12px/1.5 var(--f-mono)}
+.stack{display:grid;gap:12px}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+'use strict';
+const QDATA = {"citizen": [{"id": "c01", "q": "Қайси ҳудуддаги йўллар ҳақида фикр билдирасиз?", "type": "select", "options": ["Қорақалпоғистон Республикаси", "Андижон вилояти", "Бухоро вилояти", "Жиззах вилояти", "Қашқадарё вилояти", "Навоий вилояти", "Наманган вилояти", "Самарқанд вилояти", "Сурхондарё вилояти", "Сирдарё вилояти", "Тошкент вилояти", "Фарғона вилояти", "Хоразм вилояти", "Тошкент шаҳри", "Кўрсатмасликни хоҳлайман"], "required": false}, {"id": "c02", "q": "Автомобил йўлларидан қанчалик тез-тез фойдаланасиз?", "type": "single", "options": ["Ҳар куни", "Ҳафтада бир неча марта", "Ойда бир неча марта", "Камдан-кам"], "required": true}, {"id": "c03", "q": "Кўпроқ қайси йўллардан фойдаланасиз?", "type": "single", "options": ["Шаҳар кўчалари", "Қишлоқ ва маҳаллий йўллар", "Вилоятлараро йўллар", "Халқаро аҳамиятдаги йўллар", "Турли йўллар"], "required": true}, {"id": "c04", "q": "Сиз фойдаланадиган йўлларнинг умумий ҳолатини қандай баҳолайсиз?", "type": "scale", "required": true, "hint": "1 — жуда ёмон, 5 — жуда яхши"}, {"id": "c05", "q": "Йўлларда Сизни энг кўп безовта қиладиган муаммолар қайсилар?", "type": "multi", "max": 3, "required": true, "options": ["Чуқур ва нотекис қоплама", "Ёмғирдан кейин сув тўпланиши", "Йўл чизиқлари ва белгилар етишмаслиги", "Ёритишнинг етарли эмаслиги", "Пиёдалар учун шароит", "Йўл-таъмир ишларининг чўзилиши", "Тирбандлик ва ҳаракатни ташкил қилиш", "Бошқа"]}, {"id": "c06", "q": "Йўл қопламасидаги нуқсонлар кўпроқ қачон кучаяди?", "type": "single", "options": ["Қишдан кейин", "Ёздаги иссиқда", "Кучли ёғингарчиликдан кейин", "Йил давомида", "Билмайман"]}, {"id": "c07", "q": "Хавфсиз ҳаракатланишга энг кўп нима халақит беради?", "type": "single", "options": ["Йўлнинг техник ҳолати", "Кўриниш ва ёритиш", "Белгилар ва чизиқлар", "Пиёдалар ўтиш жойлари", "Ҳайдовчиларнинг ҳаракати", "Билмайман"]}, {"id": "c08", "q": "Йўллардаги таъмирлаш ишлари натижасидан қанчалик қониқасиз?", "type": "scale", "hint": "1 — умуман қониқмайман, 5 — тўлиқ қониқаман"}, {"id": "c09", "q": "Биринчи навбатда қайси йўналишга эътибор қаратиш керак?", "type": "single", "options": ["Йўл қопламаси мустаҳкамлиги", "Йўл ҳаракати хавфсизлиги", "Сув қочириш тизимлари", "Пиёда ва велосипед инфратузилмаси", "Йўл белгиси ва ёритиш", "Таъмираш тезлиги"]}, {"id": "c10", "q": "Охирги 12 ойда фойдаланадиган йўлларингиз ҳолати қандай ўзгарди?", "type": "single", "options": ["Яхшиланди", "Ўзгармади", "Ёмонлашди", "Баҳолаш қийин"]}, {"id": "c11", "q": "Илмий тадқиқотлар қайси масалада кўпроқ фойда бериши мумкин, деб ўйлайсиз?", "type": "single", "options": ["Узоқ хизмат қиладиган йўл қопламаси", "Арзон ва сифатли маҳаллий материаллар", "Йўлда сув тўпланишини камайтириш", "Йўл хавфсизлиги бўйича технологиялар", "Экологик тоза йўл технологиялари", "Билмайман"]}, {"id": "c12", "q": "Йўл муаммоси ҳақида онлайн хабар бериш имкониятидан фойдаланармидингиз?", "type": "single", "options": ["Ҳа", "Йўқ", "Эҳтимол"]}, {"id": "c13", "q": "Сиз учун энг муҳим йўл муаммосини ёки таклифингизни ёзинг.", "type": "text", "required": false, "hint": "Илтимос, исм, телефон, аниқ хонадон манзили ёки бошқа шахсий маълумотларни ёзманг."}], "experts": [{"id": "e01", "q": "Қайси ҳудуддаги йўл хўжалиги тажрибасига таянасиз?", "type": "select", "options": ["Қорақалпоғистон Республикаси", "Андижон вилояти", "Бухоро вилояти", "Жиззах вилояти", "Қашқадарё вилояти", "Навоий вилояти", "Наманган вилояти", "Самарқанд вилояти", "Сурхондарё вилояти", "Сирдарё вилояти", "Тошкент вилояти", "Фарғона вилояти", "Хоразм вилояти", "Тошкент шаҳри", "Кўрсатмасликни хоҳлайман"], "required": false}, {"id": "e02", "q": "Фаолиятингиз қайси йўналишга яқин?", "type": "single", "required": true, "options": ["Лойиҳалаш", "Қурилиш", "Эксплуатация ва таъмирлаш", "Лаборатория ва сифат назорати", "Илмий тадқиқот", "Бошқарув ва техник назорат", "Олий таълим", "Бошқа"]}, {"id": "e03", "q": "Йўл соҳасидаги иш тажрибангиз қанча?", "type": "single", "options": ["3 йилгача", "3–5 йил", "6–10 йил", "11–20 йил", "20 йилдан ортиқ", "Кўрсатмаслик"]}, {"id": "e04", "q": "Кўпроқ қайси объектлар билан ишлайсиз?", "type": "single", "options": ["Автомобил йўллари қопламаси", "Йўл асослари ва грунтлар", "Кўприк ва сунъий иншоотлар", "Йўл ҳаракати хавфсизлиги", "Йўл атрофи инфратузилмаси", "Бир нечта йўналиш"]}, {"id": "e05", "q": "Ҳозир соҳадаги энг долзарб техник муаммоларни белгиланг.", "type": "multi", "max": 3, "required": true, "options": ["Асфальтбетоннинг эрта емирилиши", "Йўл асосининг юк кўтариш қобилияти", "Сув қочириш ва намлик таъсири", "Битум ва боғловчи материаллар сифати", "Лаборатория назоратидаги узилишлар", "Меъёрларни қўллашдаги зиддиятлар", "Кўприклар эксплуатацияси", "Ишлаб чиқариш технологияларига риоя қилиш"]}, {"id": "e06", "q": "Йўл қопламаларида эрта нуқсон пайдо бўлишининг асосий сабаби нимада?", "type": "single", "options": ["Лойиҳавий ечимлар", "Материаллар сифати", "Қурилиш технологияси", "Нотўғри эксплуатация / ортиқча юк", "Сув қочириш муаммоси", "Бир нечта сабаб биргаликда"]}, {"id": "e07", "q": "Қайси сифат назорати босқичини кучайтириш зарур?", "type": "single", "options": ["Хом ашёни қабул қилиш", "Аралашма тайёрлаш", "Ётқизиш ва зичлаш", "Тайёр қопламани синаш", "Эксплуатация даври мониторинги"]}, {"id": "e08", "q": "Маҳаллий хом ашёнинг йўл қурилишидаги истиқболини қандай баҳолайсиз?", "type": "scale", "hint": "1 — паст, 5 — жуда юқори"}, {"id": "e09", "q": "Қайси меъёрий йўналишни биринчи навбатда такомиллаштириш зарур?", "type": "single", "options": ["Асфальтбетон аралашмалари", "Грунт ва йўл асослари", "Сементбетон қопламалар", "Кўприк ва иншоотлар", "Лаборатория синов усуллари", "Йўл ҳаракати хавфсизлиги", "Бошқа"]}, {"id": "e10", "q": "Лаборатория ва илмий синовларда асосий чеклов нима?", "type": "single", "options": ["Ускуналар етишмаслиги", "Методикалар ва стандартлар", "Малакали кадрлар", "Молиялаштириш", "Амалий маълумотлар етишмаслиги", "Синов инфратузилмасига кириш"]}, {"id": "e11", "q": "Соҳада қайси рақамли ечим энг фойдали бўлар эди?", "type": "single", "options": ["Йўл ҳолатини автоматик мониторинг қилиш", "Лаборатория натижаларининг ягона базаси", "Меъёрий ҳужжатлар бўйича AI қидирув", "Қурилиш сифати рақамли назорати", "Илмий тажриба натижалари репозиторияси"]}, {"id": "e12", "q": "Қайси тадқиқот йўналишини тажриба участкаларида биринчи синаш керак?", "type": "single", "required": true, "options": ["Модификацияланган битум ва асфальтбетон", "Маҳаллий қум ва грунтлардан йўл асоси", "Иккиламчи материаллардан фойдаланиш", "Ультра юпқа қопламалар", "Сувни тез чиқарувчи қопламалар", "Фибрали цементбетон", "Кўприклар учун инновацион материаллар"]}, {"id": "e13", "q": "Инновацияларни амалиётга жорий қилишдаги асосий тўсиқ қайси?", "type": "single", "options": ["Меъёрий база", "Молиявий ресурс", "Синов полигонлари", "Ишлаб чиқарувчилар тайёрлиги", "Малака ва кадрлар", "Тадқиқот натижаларининг етарли эмаслиги"]}, {"id": "e14", "q": "Илмий натижаларни мутахассисларга қандай тақдим этиш самарали?", "type": "single", "options": ["Қисқа техник тавсияномалар", "Видео ва вебинарлар", "Амалиётда кўрсатув синовлари", "Очиқ илмий маълумотлар базаси", "Ўқув семинарлари"]}, {"id": "e15", "q": "Қандай илмий муаммонинг ечими ёки технологиянинг синовини таклиф қиласиз?", "type": "text", "hint": "Шахс, ташкилот ёки объектни аниқлаш имконини берадиган маълумотларни киритманг."}], "regions": ["Қорақалпоғистон Республикаси", "Андижон вилояти", "Бухоро вилояти", "Жиззах вилояти", "Қашқадарё вилояти", "Навоий вилояти", "Наманган вилояти", "Самарқанд вилояти", "Сурхондарё вилояти", "Сирдарё вилояти", "Тошкент вилояти", "Фарғона вилояти", "Хоразм вилояти", "Тошкент шаҳри"]};
+const BRAND = 'YO‘L ILMI';
+const REGIONS = QDATA.regions;            // 14 hudud
+const NOREG = REGIONS.length;             // "Ko'rsatmaslikni xohlayman" varianti indeksi
+const SURVEYS = { citizen: QDATA.citizen, expert: QDATA.experts };
+const AUD_LABEL = { citizen: 'Аҳоли', expert: 'Мутахассислар' };
+const MIN_N = 10;
+
+/* ---------- Kirill → Lotin transliteratsiya ---------- */
+const TR = {'а':'a','б':'b','в':'v','г':'g','д':'d','ё':'yo','ж':'j','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'x','ч':'ch','ш':'sh','щ':'sh','ъ':'ʼ','ь':'','ы':'i','э':'e','ю':'yu','я':'ya','ў':'oʻ','қ':'q','ғ':'gʻ','ҳ':'h'};
+const VOW = 'аеёиоуўэюяыАЕЁИОУЎЭЮЯaeiouAEIOU';
+const isLetter = c => !!c && c.toLowerCase() !== c.toUpperCase();
+const isUp = c => c !== c.toLowerCase();
+const latCache = new Map();
+function lat(s){
+  if (!s) return s;
+  const hit = latCache.get(s); if (hit !== undefined) return hit;
+  let out = '';
+  for (let i = 0; i < s.length; i++){
+    const ch = s[i], lo = ch.toLowerCase(), p = s[i-1], n = s[i+1];
+    let r;
+    if (lo === 'е') r = (!p || !isLetter(p) || VOW.includes(p) || 'ъьЪЬ'.includes(p)) ? 'ye' : 'e';
+    else if (lo === 'ц') r = (p && VOW.includes(p)) ? 'ts' : 's';
+    else if (lo in TR) r = TR[lo];
+    else { out += ch; continue; }
+    if (r && isUp(ch)){
+      const caps = (isLetter(n) && isUp(n)) || (!isLetter(n) && isLetter(p) && isUp(p));
+      r = caps ? r.toUpperCase() : r[0].toUpperCase() + r.slice(1);
+    }
+    out += r;
+  }
+  latCache.set(s, out); return out;
+}
+
+/* ---------- Holat ---------- */
+const mem = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+};
+const CONF = window.YOL_ILMI_CONFIG || {};
+const SB_OK = !!(CONF.SUPABASE_URL && CONF.SUPABASE_ANON_KEY && !/XXXX/.test(CONF.SUPABASE_URL + CONF.SUPABASE_ANON_KEY) && window.supabase);
+const sb = SB_OK ? window.supabase.createClient(CONF.SUPABASE_URL, CONF.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true } }) : null;
+const S = {
+  script: mem.get('yi-script') || 'lat',
+  route: 'home',
+  sample: null,
+  ready: false, canWrite: SB_OK, isAdmin: false, session: null, email: '', role: '',
+  config: null, summary: null,
+  responses: [], starts: { citizen: 0, expert: 0 }, topics: [], audit: [], adminLogged: false, loading: false, loadErr: '', loadedAt: 0,
+  sv: null, done: {},
+  resAud: 'citizen',
+  adm: { tab: 'overview', aud: 'citizen', region: 'all', from: '', to: '', hideSmall: true,
+         tAud: 'citizen', tStatus: 'new', tTheme: '', qeAud: 'citizen', exportWeek: true, exportMerge: true },
+  login: { email: '', err: '', busy: false },
+  link: { token: null, audience: null, checked: false, ok: false }, links: [], lf: { label: '', audience: '' }, qrOpen: {},
+  tf: null, qe: {}, cfgDraft: null, ai: {}, aiBusy: false, aiErr: '', confirm: null, csvFallback: '',
+  dirty: false
+};
+const tt = s => S.script === 'lat' ? lat(s) : s;
+const theme0 = mem.get('yi-theme'); if (theme0) document.documentElement.dataset.theme = theme0;
+
+/* ---------- Yordamchilar ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const T = s => esc(tt(s));
+const fmt = n => n == null ? '—' : String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const pct = (a,b) => b ? Math.round(a / b * 100) : 0;
+const pad = n => String(n).padStart(2,'0');
+const todayBucket = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Tashkent'}).format(new Date());
+function weekBucket(d){ const x = new Date(d + 'T00:00:00Z'); const wd = (x.getUTCDay() + 6) % 7; x.setUTCDate(x.getUTCDate() - wd); return x.toISOString().slice(0,10); }
+const dmy = d => d ? d.slice(8,10) + '.' + d.slice(5,7) + '.' + d.slice(0,4) : '—';
+function dt(ms){ if (!ms) return '—'; const d = new Date(ms); return new Intl.DateTimeFormat('ru-RU',{timeZone:'Asia/Tashkent',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d); }
+const chunk = (a, n) => { const o = []; for (let i = 0; i < a.length; i += n) o.push(a.slice(i, i + n)); return o; };
+function toast(msg){ const el = document.getElementById('toast'); el.textContent = msg; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 3200); }
+const regionName = i => i == null ? tt('Кўрсатилмаган') : tt(REGIONS[i]);
+
+/* ---------- So'rov konfiguratsiyasi ---------- */
+const cfg = () => S.config || {};
+const cfgVersion = () => cfg().version || '1.0';
+const ov = q => (cfg().overrides || {})[q.id] || {};
+const qText = q => ov(q).q || q.q;
+const qReq = q => typeof ov(q).required === 'boolean' ? ov(q).required : !!q.required;
+const qHidden = q => !!ov(q).hidden;
+const qs = aud => SURVEYS[aud].filter(q => !qHidden(q));
+const stepsOf = aud => chunk(qs(aud), 4);
+function audOpen(aud){
+  const a = (cfg()[aud]) || {};
+  if (a.open === false) return false;
+  if (a.closes && todayBucket() > a.closes) return false;
+  return true;
+}
+const scaleEnds = q => { const h = q.hint || ''; const m = h.split(/,\s*/); return [ (m[0]||'').replace(/^1\s*—\s*/,''), (m[1]||'').replace(/^5\s*—\s*/,'') ]; };
+
+/* Ochiq javob mavzulari (kodlash lug'ati) */
+const THEMES = {
+  citizen: [
+    ['surface','Қоплама нуқсонлари'],['water','Сув тўпланиши ва дренаж'],['marking','Белги ва чизиқлар'],['light','Ёритиш'],
+    ['ped','Пиёда ва велосипед инфратузилмаси'],['repair','Таъмир сифати ва муддати'],['safety','Ҳаракат хавфсизлиги'],['traffic','Тирбандлик'],['other','Бошқа']
+  ],
+  expert: [
+    ['material','Материаллар сифати'],['norms','Меъёрий база'],['lab','Лаборатория назорати'],['tech','Технологияга риоя'],
+    ['drain','Сув қочириш ва намлик'],['bridge','Кўприк ва иншоотлар'],['digital','Рақамли ечимлар'],['innov','Инновацияни жорий этиш'],['other','Бошқа']
+  ]
+};
+const themeLabel = (aud, id) => { const f = THEMES[aud].find(x => x[0] === id); return f ? tt(f[1]) : id; };
+const TOPIC_STATUS = [['proposal','Таклиф','sign'],['review','Эксперт кўригида','warn'],['approved','Тасдиқланган','ok'],['rejected','Рад этилган','bad']];
+const OWNER_ROLES = ['Тадқиқот раҳбари','Аналитик','Эксперт комиссияси','Ҳудудий кузатувчи'];
+
+/* Shaxsiy ma'lumotlarni niqoblash */
+const PII_TAG = '[•••]';
+function maskPII(s){
+  let hit = false; const h = () => { hit = true; };
+  s = s.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, () => { h(); return PII_TAG; });
+  s = s.replace(/(^|[^A-Za-zА-Яа-яЁёЎўҚқҒғҲҳ])([A-ZА-ЯЎҚҒҲ]{2}\s?\d{7})(?!\d)/g, (m, p) => { h(); return p + PII_TAG; });
+  s = s.replace(/\+?\d[\d\s\-()]{6,}\d/g, () => { h(); return PII_TAG; });
+  s = s.replace(/(^|\s)@[A-Za-z0-9_]{4,}/g, (m, p) => { h(); return p + PII_TAG; });
+  return { text: s, hit };
+}
+const hasPII = s => maskPII(s || '').hit;
+
+/* ---------- Ikonkalar ---------- */
+const I = {
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+  mark: '<svg viewBox="0 0 40 40" width="38" height="38" aria-hidden="true"><rect width="40" height="40" rx="9" fill="var(--sign)"/><path d="M16.5 8h7l6.5 26H10z" fill="var(--sign-ink)" opacity=".92"/><path d="M19.3 11h1.4l.3 4h-2zM19 18h2l.4 5h-2.8zM18.6 26h2.8l.5 6h-3.8z" fill="var(--marking)"/></svg>'
+};
+
+/* ---------- Agregatlash ---------- */
+const completed = aud => S.responses.filter(r => r.status === 'completed' && (!aud || r.audience === aud));
+function answered(a){ return !(a == null || a === '' || (Array.isArray(a) && !a.length)); }
+function aggQ(q, list){
+  const total = list.length; let n = 0, sum = 0;
+  const size = q.type === 'scale' ? 5 : (q.options || []).length;
+  const counts = new Array(size).fill(0);
+  for (const r of list){
+    const a = r.answers && r.answers[q.id];
+    if (!answered(a)) continue; n++;
+    if (q.type === 'multi') a.forEach(i => { if (counts[i] != null) counts[i]++; });
+    else if (q.type === 'scale'){ counts[a-1]++; sum += a; }
+    else if (q.type !== 'text' && counts[a] != null) counts[a]++;
+  }
+  return { total, n, skipped: total - n, counts, mean: q.type === 'scale' && n ? sum / n : null };
+}
+function suppress(cells){
+  const out = cells.slice();
+  const small = cells.map((v,i) => v > 0 && v < MIN_N ? i : -1).filter(i => i >= 0);
+  small.forEach(i => out[i] = null);
+  if (small.length === 1){
+    let best = -1;
+    cells.forEach((v,i) => { if (out[i] != null && v > 0 && (best < 0 || v < cells[best])) best = i; });
+    if (best >= 0) out[best] = null;
+  }
+  return out;
+}
+function regionCounts(list){ const c = new Array(NOREG + 1).fill(0); list.forEach(r => c[r.region == null ? NOREG : r.region]++); return c; }
+function regionMean(list, qid){
+  const m = new Array(NOREG).fill(null);
+  for (let i = 0; i < NOREG; i++){
+    const xs = list.filter(r => r.region === i && answered(r.answers && r.answers[qid])).map(r => r.answers[qid]);
+    m[i] = { n: xs.length, mean: xs.length ? xs.reduce((a,b) => a + b, 0) / xs.length : null };
+  }
+  return m;
+}
+function themeCounts(aud, list){
+  const c = {}; THEMES[aud].forEach(([id]) => c[id] = 0);
+  list.forEach(r => { if (r.review && r.review.status === 'reviewed') (r.review.themes || []).forEach(id => { if (c[id] != null) c[id]++; }); });
+  return c;
+}
+
+/* ---------- Ommaviy xulosani tuzish (n<10 yashiriladi) ---------- */
+function buildSummary(){
+  const out = { published_at: Date.now(), version: cfgVersion(), min_n: MIN_N, audiences: {}, topics: [] };
+  for (const aud of ['citizen','expert']){
+    const list = completed(aud);
+    const A = { N: list.length >= MIN_N ? list.length : null, questions: {}, regions: null, region_mean: null, themes: null };
+    if (list.length >= MIN_N){
+      for (const q of qs(aud)){
+        if (q.type === 'text' || q.type === 'select') continue;
+        const ag = aggQ(q, list);
+        A.questions[q.id] = ag.n >= MIN_N ? { n: ag.n, skipped: ag.skipped, counts: ag.counts, mean: ag.mean } : { n: null };
+      }
+      A.regions = suppress(regionCounts(list));
+      const mq = aud === 'citizen' ? 'c04' : 'e08';
+      A.region_mean = regionMean(list, mq).map(x => x.n >= MIN_N ? Math.round(x.mean * 100) / 100 : null);
+      const tc = themeCounts(aud, list);
+      A.themes = Object.fromEntries(Object.entries(tc).map(([k,v]) => [k, v >= MIN_N ? v : (v > 0 ? null : 0)]));
+    }
+    out.audiences[aud] = A;
+  }
+  out.topics = S.topics.filter(t => t.public && t.status !== 'rejected').map(t => ({ name: t.name, summary: t.evidence || '', status: t.status }));
+  return out;
+}
+
+/* ---------- Render ---------- */
+function header(){
+  const r = S.route;
+  const nav = [['home','Бош саҳифа'],['results','Натижалар'],['about','Лойиҳа ҳақида'],['privacy','Махфийлик']];
+  const dark = (document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+  return `<header class="top"><div class="wrap top-in">
+    <a class="brand" href="#home">${I.mark}<span><b>${BRAND}</b><small>${T('Республика аноним илмий сўров платформаси')}</small></span></a>
+    <nav class="nav" aria-label="${T('Асосий меню')}">${nav.map(([k,l]) => `<a href="#${k}" ${r===k || (k==='home' && (r==='citizen'||r==='expert')) ? 'aria-current="page"' : ''}>${T(l)}</a>`).join('')}</nav>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="${T('Ёзув')}"><button data-act="script" data-v="lat" aria-pressed="${S.script==='lat'}">Lotin</button><button data-act="script" data-v="cyr" aria-pressed="${S.script==='cyr'}">Кирилл</button></div>
+      <button class="icon-btn" data-act="theme" aria-label="${T(dark ? 'Кундузги режим' : 'Тунги режим')}" title="${T(dark ? 'Кундузги режим' : 'Тунги режим')}">${dark ? I.sun : I.moon}</button>
+      ${S.isAdmin ? `<a class="admin-link" href="#admin">${I.shield}${T('Админ')}</a>` : ''}
+    </div>
+  </div></header>`;
+}
+function footer(){
+  return `<footer class="foot"><div class="wrap foot-in">
+    <span>${BRAND} · ${T('Автомобил йўллари илмий-тадқиқот институти ташаббуси')} · 2026</span>
+    <span>${T('Пилот версия')} ${esc(cfgVersion())} · <a href="#privacy">${T('Махфийлик сиёсати')}</a> · <a href="#admin">${T('Админ кириши')}</a></span>
+  </div></footer>`;
+}
+
+function viewHome(){
+  const c = SURVEYS.citizen.length, e = SURVEYS.expert.length;
+  const card = (aud, title, items, mins, cls) => {
+    const open = audOpen(aud);
+    return `<article class="card aud">
+      <span class="tag ${cls}"><span class="dot"></span>${T(aud==='citizen' ? 'Аҳоли учун · 18+' : 'Соҳа мутахассислари учун')}</span>
+      <h3>${T(title)}</h3>
+      <div class="meta"><span><b class="num">${qs(aud).length}</b> ${T('савол')}</span><span>≈ <b class="num">${mins}</b> ${T('дақиқа')}</span><span>${open ? `<span class="tag ok">${T('Очиқ')}</span>` : `<span class="tag bad">${T('Ёпилган')}</span>`}</span></div>
+      <ul>${items.map(i => `<li>${T(i)}</li>`).join('')}</ul>
+      <div class="row"><a class="btn ${aud==='citizen'?'btn-primary':'btn-ghost'}" href="#${aud}">${T(aud==='citizen' ? 'Аҳоли сўровини бошлаш' : 'Мутахассис сўровини бошлаш')}</a></div>
+    </article>`;
+  };
+  const sm = S.summary;
+  const smN = sm ? ['citizen','expert'].map(a => sm.audiences?.[a]?.N) : null;
+  return `
+  <section class="hero"><div class="wrap hero-in">
+    <div>
+      <div class="eyebrow">${T('Аноним илмий сўров · 2026')}</div>
+      <h1>${T('Йўллар ҳақидаги фикрингиз илмий тадқиқотга айланади')}</h1>
+      <p class="lead">${T('Аҳоли кузатувлари ва йўл хўжалиги мутахассислари тажрибаси алоҳида йиғилади, илмий жиҳатдан таҳлил қилинади ва тадқиқотлар учун устуворликларга айланади. Исм, телефон ёки манзил сўралмайди.')}</p>
+      <div class="row">${S.link.audience !== 'expert' ? `<a class="btn btn-mark" href="#citizen">${T('Аҳоли сифатида жавоб бериш')}</a>` : ''}${S.link.audience !== 'citizen' ? `<a class="btn ${S.link.audience === 'expert' ? 'btn-mark' : 'btn-ghost'}" href="#expert">${T('Мутахассис сифатида')}</a>` : ''}</div>
+    </div>
+    <div class="posts">
+      <div class="post"><b class="num">14</b><span>${T('ҳудуд: Қорақалпоғистон, 12 вилоят, Тошкент шаҳри')}</span></div>
+      <div class="post"><b class="num">${c + e}</b><span>${T('савол икки мустақил йўналишда')}</span></div>
+      <div class="post"><b class="num">0</b><span>${T('шахсий маълумот сўралади')}</span></div>
+    </div>
+  </div><div class="lane" aria-hidden="true"></div></section>
+
+  <section class="section"><div class="wrap">
+    <div class="sec-head"><div><h2>${T('Ўзингизга мос сўровни танланг')}</h2><p>${T('Икки аудитория жавоблари бир фоизга аралаштирилмайди: ҳар бири ўз кўрсаткичлари билан алоҳида таҳлил қилинади.')}</p></div></div>
+    <div class="aud-grid">
+      ${S.link.audience === 'expert' ? '' : card('citizen','Йўллар ҳолати ва фойдаланувчи эҳтиёжлари',['Йўллардан фойдаланиш ва умумий баҳо','Энг кўп безовта қиладиган муаммолар','Таъмир натижаси ва охирги 12 ойдаги ўзгариш','Илмий тадқиқот учун устувор масалалар'],5,'sign')}
+      ${S.link.audience === 'citizen' ? '' : card('expert','Меъёрий-техник муаммолар ва илмий эҳтиёжлар',['Долзарб техник муаммолар ва эрта нуқсонлар сабаби','Сифат назорати ва меъёрий йўналишлар','Лаборатория ва синов чекловлари','Тажриба участкаларида синаладиган технологиялар'],7,'c2')}
+    </div>
+  </div></section>
+
+  <section class="section"><div class="wrap">
+    <div class="sec-head"><div><h2>${T('Сўров қандай ўтади')}</h2></div></div>
+    <ol class="steps">
+      <li><b>${T('Аудиторияни танлаш')}</b><span>${T('Аҳоли ёки мутахассис')}</span></li>
+      <li><b>${T('Махфийлик изоҳи')}</b><span>${T('Нима йиғилади ва нима йиғилмайди')}</span></li>
+      <li><b>${T('4 тадан саволли босқичлар')}</b><span>${T('Айрим саволлар ихтиёрий')}</span></li>
+      <li><b>${T('Текшириш ва юбориш')}</b><span>${T('Жавобларни юборишдан олдин кўриб чиқасиз')}</span></li>
+      <li><b>${T('Умумлаштирилган натижалар')}</b><span>${T('Фақат агрегат кўринишда эълон қилинади')}</span></li>
+    </ol>
+  </div></section>
+
+  <section class="section"><div class="wrap split">
+    <div class="card panel">
+      <h3>${T('Сиздан сўралмайди')}</h3>
+      <div class="nolist">${['Ф.И.Ш.','Телефон','ЖШШИР','Паспорт','Аниқ манзил','Ташкилот номи','Аккаунт ёки OneID'].map(x => `<span>${T(x)}</span>`).join('')}</div>
+      <p class="muted" style="margin-top:14px;font-size:14px">${T('Ҳудудни кўрсатмаслик мумкин. Стаж ва фаолият йўналиши кенг тоифаларда сўралади.')}</p>
+    </div>
+    <div class="card panel">
+      <h3>${T('Натижалар қандай эълон қилинади')}</h3>
+      <ul class="checks">
+        <li>${T('Ҳар бир савол учун ҳақиқий жавоб берувчилар сони (n) кўрсатилади')}</li>
+        <li>${T('10 тадан кам жавобли гуруҳлар очиқ кўрсатилмайди')}</li>
+        <li>${T('Эркин матндаги телефон ва email автоматик яширилади')}</li>
+        <li>${T('Сўров ихтиёрий: натижа бутун аҳоли фикри деб талқин қилинмайди')}</li>
+      </ul>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="wrap">
+    <div class="card panel" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center">
+      <div><div class="eyebrow">${T('Умумлаштирилган натижалар')}</div>
+        <h3 style="margin:8px 0 4px">${sm ? T('Охирги эълон: ') + esc(dt(sm.published_at)) : T('Натижалар ҳали эълон қилинмаган')}</h3>
+        <p class="muted">${sm ? T('Аҳоли: ') + (smN[0] != null ? fmt(smN[0]) : '&lt;10') + ' · ' + T('Мутахассислар: ') + (smN[1] != null ? fmt(smN[1]) : '&lt;10') + ' ' + T('жавоб') : T('Етарли жавоб йиғилгач, тадқиқот гуруҳи агрегат натижаларни шу ерда эълон қилади.')}</p></div>
+      <a class="btn btn-ghost" href="#results">${T('Натижаларни кўриш')}</a>
+    </div>
+  </div></section>`;
+}
+
+/* ----- So'rov ----- */
+function newSurvey(aud){ return { aud, stage: 'intro', step: 0, answers: {}, ack: false, errors: {}, docId: null, saving: false, saveErr: '', saved: false }; }
+function viewSurvey(){
+  const sv = S.sv, aud = sv.aud, steps = stepsOf(aud);
+  const title = aud === 'citizen' ? 'Аҳоли сўрови' : 'Мутахассислар сўрови';
+  const total = steps.length + 1;
+  const road = cur => `<div class="road" aria-hidden="true"><div class="road-track">${Array.from({length: total}, (_, i) => `<span class="dash ${i < cur ? 'done' : i === cur ? 'now' : ''}"></span>`).join('')}</div>
+    <div class="road-lbl"><span>KM ${pad(Math.min(cur+1,total))} / ${pad(total)}</span><span>${cur < steps.length ? T('Босқич') + ' ' + (cur+1) : T('Текшириш')}</span></div></div>`;
+  const writeNote = !SB_OK ? `<div class="notice" style="margin-bottom:16px"><span>${I.lock}</span><div><b>${T('Намойиш режими.')}</b> ${T('Платформа ҳали маълумотлар базасига уланмаган, шунинг учун жавоблар сақланмайди.')}</div></div>` : '';
+
+  if (sv.stage === 'intro'){
+    const open = audOpen(aud);
+    const again = S.done[aud] ? `<div class="notice info" style="margin-bottom:16px"><div><b>${T('Сиз бу сеансда жавоб бердингиз.')}</b> ${T('Илтимос, бир сўровга бир марта жавоб беринг.')}</div></div>` : '';
+    return `<div class="wrap"><div class="sv">
+      <div class="sv-head"><div><div class="eyebrow">${T(AUD_LABEL[aud])} · ${T('Версия')} ${esc(cfgVersion())}</div><h1>${T(title)}</h1></div></div>
+      ${again}${writeNote}
+      ${!open ? `<div class="notice bad" style="margin-bottom:16px"><div><b>${T('Сўров ёпилган.')}</b> ${T('Ҳозирча жавоб қабул қилинмайди. Умумлаштирилган натижаларни кўришингиз мумкин.')}</div></div>` : ''}
+      <div class="card panel stack">
+        <div class="row" style="gap:22px"><span><b class="num">${qs(aud).length}</b> ${T('савол')}</span><span><b class="num">${steps.length}</b> ${T('босқич')}</span><span>≈ <b class="num">${aud==='citizen'?5:7}</b> ${T('дақиқа')}</span></div>
+        <h3 style="margin:6px 0 0">${T('Махфийлик ҳақида қисқача')}</h3>
+        <ul class="checks">
+          <li>${T('Исм, телефон, ЖШШИР, паспорт, аниқ манзил ва ташкилот номи сўралмайди.')}</li>
+          <li>${T('Жавоблар базасига IP-манзил, қурилма маълумоти ёки кузатув идентификатори ёзилмайди.')}</li>
+          <li>${T('Сана фақат кун аниқлигида сақланади. Ҳудудни кўрсатмаслик мумкин.')}</li>
+          <li>${T('Эркин матнда шахсий маълумот ёзманг: телефон ва email автоматик яширилади.')}</li>
+          <li>${T('Натижалар фақат умумлаштирилган ҳолда, 10 тадан кам жавобли гуруҳларсиз эълон қилинади.')}</li>
+        </ul>
+        <label class="check"><input type="checkbox" id="ack" data-act="ack" ${sv.ack ? 'checked' : ''}><span>${T('Изоҳни ўқидим ва ихтиёрий равишда иштирок этаман')}</span></label>
+        ${sv.errors._ack ? `<div class="err">${T('Давом этиш учун изоҳни тасдиқланг.')}</div>` : ''}
+      </div>
+      <div class="sv-nav"><a class="btn btn-ghost" href="#home">${T('Бош саҳифага қайтиш')}</a><button class="btn btn-primary" data-act="start" ${!open ? 'disabled' : ''}>${T('Сўровни бошлаш')}</button></div>
+    </div></div>`;
+  }
+  if (sv.stage === 'step'){
+    const st = steps[sv.step]; const base = steps.slice(0, sv.step).reduce((a,s) => a + s.length, 0);
+    return `<div class="wrap"><div class="sv">
+      <div class="sv-head"><div><div class="eyebrow">${T(title)}</div><h1>${T('Босқич')} ${sv.step+1} / ${steps.length}</h1></div><span class="muted" style="font-size:14px"><span class="req">*</span> ${T('мажбурий савол')}</span></div>
+      ${road(sv.step)}${writeNote}
+      ${st.map((q,i) => qBlock(q, base + i, sv)).join('')}
+      <div class="sv-nav"><button class="btn btn-ghost" data-act="prev">${T(sv.step === 0 ? 'Изоҳга қайтиш' : 'Олдинги босқич')}</button><button class="btn btn-primary" data-act="next">${T(sv.step === steps.length - 1 ? 'Жавобларни текшириш' : 'Кейинги босқич')}</button></div>
+    </div></div>`;
+  }
+  if (sv.stage === 'review'){
+    return `<div class="wrap"><div class="sv">
+      <div class="sv-head"><div><div class="eyebrow">${T(title)}</div><h1>${T('Жавобларни текширинг')}</h1></div></div>
+      ${road(steps.length)}${writeNote}
+      <div class="card panel review">
+        ${steps.map((st, si) => `<div class="rv-step"><span class="eyebrow">${T('Босқич')} ${si+1}</span><button class="btn btn-ghost btn-sm" data-act="goto" data-v="${si}">${T('Таҳрирлаш')}</button></div>
+          <dl>${st.map(q => `<div class="rv"><dt>${T(qText(q))}</dt><dd>${answerText(q, sv.answers[q.id])}</dd></div>`).join('')}</dl>`).join('')}
+      </div>
+      <input type="text" id="hp" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      ${sv.saveErr ? `<div class="notice bad" style="margin-top:14px"><div><b>${T('Жавоблар юборилмади.')}</b> ${esc(sv.saveErr)} ${T('Интернет алоқасини текшириб, қайта юборинг.')}</div></div>` : ''}
+      <div class="sv-nav"><button class="btn btn-ghost" data-act="goto" data-v="${steps.length-1}">${T('Олдинги босқич')}</button><button class="btn btn-primary" data-act="submit" ${sv.saving ? 'disabled' : ''}>${T(sv.saving ? 'Юборилмоқда…' : 'Жавобларни юбориш')}</button></div>
+    </div></div>`;
+  }
+  // done
+  return `<div class="wrap"><div class="sv">
+    <div class="card done-card">
+      <span class="tag ${sv.saved ? 'ok' : 'warn'}"><span class="dot"></span>${T(sv.saved ? 'Жавоблар қабул қилинди' : 'Кўриб чиқиш режими')}</span>
+      <h1>${T('Иштирокингиз учун раҳмат!')}</h1>
+      <p class="muted" style="max-width:56ch">${T(sv.saved ? 'Жавобларингиз аноним ҳолда сақланди. Улар бошқа жавоблар билан бирга умумлаштирилган ҳолда таҳлил қилинади.' : 'Ушбу кўринишда жавоблар базага сақланмади. Сўровда ҳақиқий иштирок этиш учун тадқиқот гуруҳи берган ҳаволадан фойдаланинг.')}</p>
+      <div class="row" style="margin-top:22px"><a class="btn btn-primary" href="#results">${T('Умумлаштирилган натижалар')}</a><a class="btn btn-ghost" href="#home">${T('Бош саҳифа')}</a></div>
+    </div>
+  </div></div>`;
+}
+function answerText(q, a){
+  if (!answered(a)) return `<span class="empty">${T('Жавоб берилмаган')}</span>`;
+  if (q.type === 'multi') return a.map(i => T(q.options[i])).join('; ');
+  if (q.type === 'scale') return `${a} / 5`;
+  if (q.type === 'text') return esc(a);
+  return T(q.options[a]);
+}
+function qBlock(q, idx, sv){
+  const a = sv.answers[q.id], req = qReq(q), err = sv.errors[q.id], id = q.id;
+  let body = '';
+  if (q.type === 'select'){
+    body = `<select id="q-${id}" data-q="${id}" aria-labelledby="qt-${id}"><option value="">${T('Танланг')}</option>${q.options.map((o,i) => `<option value="${i}" ${a === i ? 'selected' : ''}>${T(o)}</option>`).join('')}</select>`;
+  } else if (q.type === 'single'){
+    body = `<div class="opts" role="radiogroup" aria-labelledby="qt-${id}">${q.options.map((o,i) => `<label class="opt"><input type="radio" id="q-${id}-${i}" name="q-${id}" value="${i}" data-q="${id}" ${a === i ? 'checked' : ''}><span>${T(o)}</span></label>`).join('')}</div>`;
+  } else if (q.type === 'multi'){
+    const sel = a || [], full = q.max && sel.length >= q.max;
+    body = `<div class="opts" role="group" aria-labelledby="qt-${id}">${q.options.map((o,i) => `<label class="opt"><input type="checkbox" id="q-${id}-${i}" value="${i}" data-q="${id}" ${sel.includes(i) ? 'checked' : (full ? 'disabled' : '')}><span>${T(o)}</span></label>`).join('')}</div>`;
+  } else if (q.type === 'scale'){
+    const [l, r] = scaleEnds(q);
+    body = `<div class="scale" role="radiogroup" aria-labelledby="qt-${id}">${[1,2,3,4,5].map(v => `<label><input type="radio" id="q-${id}-${v}" name="q-${id}" value="${v}" data-q="${id}" ${a === v ? 'checked' : ''}><span>${v}</span></label>`).join('')}</div><div class="scale-ends"><span>1 — ${T(l)}</span><span>5 — ${T(r)}</span></div>`;
+  } else if (q.type === 'text'){
+    const v = a || '';
+    body = `<div class="field"><textarea id="q-${id}" data-q="${id}" maxlength="700" aria-labelledby="qt-${id}" aria-describedby="qh-${id}">${esc(v)}</textarea>
+      <div class="count" id="cnt-${id}">${v.length} / 700</div>
+      <div class="notice" id="pii-${id}" ${hasPII(v) ? '' : 'hidden'}><div><b>${T('Матнда шахсий маълумот кўринмоқда.')}</b> ${T('Телефон, email ёки ҳужжат рақами юборилганда автоматик яширилади. Уни ўзингиз ўчириб қўйганингиз маъқул.')}</div></div></div>`;
+  }
+  let hint = '';
+  if (q.type === 'multi' && q.max) hint = tt('Кўпи билан') + ' ' + q.max + ' ' + tt('та вариант');
+  else if (q.type === 'text') hint = q.hint ? tt(q.hint) : '';
+  else if (!req) hint = tt('Ихтиёрий савол');
+  if (q.type === 'select' && !req) hint = tt('Ихтиёрий: ҳудудни кўрсатмаслик мумкин');
+  return `<div class="card q ${err ? 'has-err' : ''}" id="qb-${id}">
+    <div class="q-top"><span class="q-num">${pad(idx+1)}</span><div><h3 id="qt-${id}">${T(qText(q))}${req ? '<span class="req" aria-label="' + T('мажбурий') + '">*</span>' : ''}</h3>${hint ? `<p class="q-hint" id="qh-${id}">${esc(hint)}</p>` : ''}</div></div>
+    <div class="q-body">${body}${err ? `<div class="err" id="er-${id}">${T(err)}</div>` : ''}</div>
+  </div>`;
+}
+
+async function surveyStart(){
+  const sv = S.sv;
+  if (!sv.ack){ sv.errors._ack = true; render(); return; }
+  sv.errors = {}; sv.stage = 'step'; sv.step = 0; render(); scrollTop();
+  if (sb && !sv.startLogged){ sv.startLogged = true; try { await sb.from('survey_starts').insert({ audience: sv.aud, link_token: S.link.token }); } catch(e){} }
+}
+function validateStep(){
+  const sv = S.sv, st = stepsOf(sv.aud)[sv.step]; const errs = {};
+  for (const q of st){
+    const a = sv.answers[q.id];
+    if (qReq(q) && !answered(a)) errs[q.id] = q.type === 'multi' ? 'Камида битта вариантни танланг.' : 'Бу савол мажбурий. Жавоб вариантини танланг.';
+    if (q.type === 'multi' && q.max && a && a.length > q.max) errs[q.id] = 'Кўпи билан ' + q.max + ' та вариант танланг.';
+  }
+  sv.errors = errs; return Object.keys(errs);
+}
+async function surveySubmit(){
+  const sv = S.sv; if (sv.saving) return;
+  sv.saving = true; sv.saveErr = ''; render();
+  const answers = {}; let pii = false;
+  for (const q of qs(sv.aud)){
+    let a = sv.answers[q.id]; if (!answered(a)) continue;
+    if (q.type === 'text'){ const m = maskPII(String(a).trim().slice(0,700)); a = m.text; pii = m.hit; if (!a) continue; }
+    answers[q.id] = a;
+  }
+  const regQ = SURVEYS[sv.aud][0]; const rv = sv.answers[regQ.id];
+  const region = (rv == null || rv === NOREG) ? null : rv;
+  const row = { audience: sv.aud, version: cfgVersion(), region, answers, text_pii_masked: pii, link_token: S.link.token,
+    review: { status: answers[sv.aud === 'citizen' ? 'c13' : 'e15'] ? 'new' : 'none', themes: [] } };
+  const hp = document.getElementById('hp');
+  if (!sb || (hp && hp.value)){
+    sv.saving = false; sv.saved = !!(hp && hp.value); sv.stage = 'done'; S.done[sv.aud] = true; render(); scrollTop(); return;
+  }
+  try {
+    const { error } = await sb.from('responses').insert(row);
+    if (error) throw error;
+    sv.saved = true; sv.stage = 'done'; S.done[sv.aud] = true;
+  } catch(e){
+    sv.saveErr = (e && /row-level security/i.test(e.message || '')) ? tt('Таклиф ҳаволаси фаол эмас ёки бу сўров учун эмас.') : tt('Сервер жавобни қабул қилмади.') + (e && e.message ? ' (' + e.message + ')' : '');
+  }
+  sv.saving = false; render(); if (sv.stage === 'done') scrollTop();
+}
+const scrollTop = () => window.scrollTo({ top: 0 });
+
+/* ----- Natija vizuallari ----- */
+function barsHTML(q, counts, n){
+  const max = Math.max(1, ...counts);
+  return `<div class="bars">${q.options.map((o,i) => `<div class="bar"><span class="bl">${T(o)}</span><span class="bv"><b>${pct(counts[i], n)}%</b> · ${fmt(counts[i])}</span><span class="bt"><span class="bf" style="width:${(counts[i] / max * 100).toFixed(1)}%"></span></span></div>`).join('')}</div>`;
+}
+function histHTML(q, counts, mean){
+  const max = Math.max(1, ...counts), [l, r] = scaleEnds(q);
+  return `<div class="hist"><div class="mean"><b class="num">${mean != null ? mean.toFixed(2).replace('.', ',') : '—'}</b><span>${T('ўртача, 5 дан')}</span></div>
+    <div><div class="hcols">${counts.map(c => `<div class="hcol"><small>${fmt(c)}</small><i style="height:${(c / max * 86).toFixed(1)}%"></i></div>`).join('')}</div>
+    <div class="hx"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+    <div class="scale-ends"><span>${T(l)}</span><span>${T(r)}</span></div></div></div>`;
+}
+const supprHTML = () => `<div class="suppr">${I.lock}<span>${T('Жавоблар 10 тадан кам: махфийлик сабабли кўрсатилмайди.')}</span></div>`;
+function qCard(q, idx, data, aud, opts = {}){
+  let body;
+  if (!data || data.n == null || (opts.hide && data.n < MIN_N)) body = supprHTML();
+  else if (q.type === 'scale') body = histHTML(q, data.counts, data.mean);
+  else body = barsHTML(q, data.counts, data.n);
+  const nline = data && data.n != null ? `n = ${fmt(data.n)}${data.skipped != null ? ' · ' + T('жавоб бермаган') + ': ' + fmt(data.skipped) : ''}${q.type === 'multi' ? ' · ' + T('бир нечта танлов, фоизлар йиғиндиси 100% дан ошади') : ''}` : 'n &lt; 10';
+  return `<article class="card qc ${aud === 'expert' ? 'c2' : ''}"><span class="eyebrow">${aud === 'citizen' ? 'A' : 'M'}-${pad(idx+1)}</span><h4>${T(qText(q))}</h4><div class="nline">${nline}</div>${body}</article>`;
+}
+
+function viewResults(){
+  const sm = S.summary, aud = S.resAud;
+  const tabs = `<div class="tabs" role="tablist">${['citizen','expert'].map(a => `<button role="tab" data-act="resAud" data-v="${a}" aria-selected="${aud===a}">${T(AUD_LABEL[a])}</button>`).join('')}</div>`;
+  const head = `<div class="sec-head"><div><div class="eyebrow">${T('Умумлаштирилган натижалар')}</div><h2 style="margin-top:8px">${T('Сўров натижалари')}</h2>
+    <p>${sm ? T('Эълон қилинган: ') + esc(dt(sm.published_at)) + ' · ' + T('Сўров версияси ') + esc(sm.version) : T('Натижалар тадқиқот гуруҳи текширгандан кейин эълон қилинади.')}</p></div>${sm ? tabs : ''}</div>`;
+  if (!sm){
+    return `<section class="section"><div class="wrap">${head}<div class="card empty-state"><h3>${T('Натижалар ҳали эълон қилинмаган')}</h3><p>${T('Ҳар бир аудиторияда етарли жавоб йиғилгач, бу ерда саволлар бўйича тақсимотлар, ҳудудлар кесими ва тасдиқланган тадқиқот йўналишлари пайдо бўлади.')}</p><div class="row"><a class="btn btn-primary" href="#citizen">${T('Сўровда иштирок этиш')}</a></div></div></div></section>`;
+  }
+  const A = (sm.audiences || {})[aud] || {};
+  let body;
+  if (A.N == null){
+    body = `<div class="card empty-state"><h3>${T('Бу аудиторияда жавоблар ҳали етарли эмас')}</h3><p>${T('Махфийликни сақлаш учун 10 тадан кам жавоб бўлса, натижалар кўрсатилмайди.')}</p></div>`;
+  } else {
+    const covered = (A.regions || []).slice(0, NOREG).filter(v => v == null || v > 0).length;
+    const mq = aud === 'citizen' ? 'c04' : 'e08';
+    const qMean = A.questions[mq] && A.questions[mq].mean;
+    const regRows = REGIONS.map((r,i) => ({ name: tt(r), n: A.regions[i], m: A.region_mean ? A.region_mean[i] : null }));
+    const tc = A.themes || {};
+    body = `
+    <div class="kpis">
+      <div class="card kpi"><div class="eyebrow">${T('Жавоблар')}</div><div class="v">${fmt(A.N)}</div><div class="s">${T('тугалланган анкета')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('Ҳудуд қамрови')}</div><div class="v">${covered} / 14</div><div class="s">${T('жавоб бор ҳудудлар')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T(aud==='citizen' ? 'Йўл ҳолати баҳоси' : 'Маҳаллий хом ашё истиқболи')}</div><div class="v">${qMean != null ? qMean.toFixed(2).replace('.', ',') : '—'}</div><div class="s">${T('ўртача, 1–5 шкала')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('Ҳудуди кўрсатилмаган')}</div><div class="v">${A.regions[NOREG] == null ? '&lt;10' : fmt(A.regions[NOREG])}</div><div class="s">${T('ҳудуд ихтиёрий савол')}</div></div>
+    </div>
+    <div class="notice info"><div><b>${T('Талқин қилиш бўйича эслатма.')}</b> ${T('Сўров очиқ ва ихтиёрий, танланма эҳтимолий эмас. Натижалар қатнашчилар фикрини акс эттиради, бутун аҳоли ёки соҳа фикри деб умумлаштирилмайди.')}</div></div>
+    <div class="qgrid">${qs(aud).map((q,i) => ({q,i})).filter(({q}) => q.type !== 'text' && q.type !== 'select').map(({q,i}) => qCard(q, i, A.questions[q.id], aud)).join('')}</div>
+    <div><h3 style="font:700 20px var(--f-display);margin:12px 0 12px">${T('Ҳудудлар кесими')}</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>${T('Ҳудуд')}</th><th class="n">${T('Жавоблар')}</th><th class="n">${T(aud==='citizen' ? 'Йўл ҳолати (1–5)' : 'Хом ашё истиқболи (1–5)')}</th></tr></thead><tbody>
+      ${regRows.map(r => `<tr><td>${esc(r.name)}</td><td class="n">${r.n == null ? '<span class="lt">&lt;10</span>' : fmt(r.n)}</td><td class="n">${r.m == null ? '<span class="lt">—</span>' : r.m.toFixed(2).replace('.', ',')}</td></tr>`).join('')}
+      <tr><td class="muted">${T('Кўрсатилмаган')}</td><td class="n">${A.regions[NOREG] == null ? '<span class="lt">&lt;10</span>' : fmt(A.regions[NOREG])}</td><td class="n"><span class="lt">—</span></td></tr>
+    </tbody></table></div>
+    <p class="muted" style="font-size:13px;margin-top:8px">${T('«<10» — махфийлик сабабли яширилган қиймат. Қўшни қийматлар орқали қайта ҳисоблашнинг олдини олиш учун айрим кичик бўлмаган ячейкалар ҳам яширилиши мумкин.')}</p></div>
+    ${Object.values(tc).some(v => v !== 0) ? `<div class="card panel"><h3>${T('Очиқ жавоблар мавзулари')}</h3><p class="muted" style="font-size:14px;margin-bottom:12px">${T('Эркин матнлар тадқиқот гуруҳи томонидан мавзуларга ажратилган (эксперт текширувидан кейин).')}</p>
+      <div class="chips">${THEMES[aud].map(([id]) => `<span class="chip">${esc(themeLabel(aud, id))}<span class="k">${tc[id] == null ? '&lt;10' : fmt(tc[id])}</span></span>`).join('')}</div></div>` : ''}`;
+  }
+  const topics = (sm.topics || []);
+  return `<section class="section"><div class="wrap stack">${head}${body}
+    ${topics.length ? `<div><h3 style="font:700 20px var(--f-display);margin:20px 0 12px">${T('Тадқиқот йўналишлари портфели')}</h3><div class="qgrid">${topics.map(t => { const s = TOPIC_STATUS.find(x => x[0] === t.status) || TOPIC_STATUS[0]; return `<article class="card topic"><span class="tag ${s[2]}">${T(s[1])}</span><h4>${esc(t.name)}</h4>${t.summary ? `<p class="muted" style="font-size:14px">${esc(t.summary)}</p>` : ''}</article>`; }).join('')}</div>
+    <p class="muted" style="font-size:13px;margin-top:8px">${T('Кўп такрорланган муаммо автоматик равишда илмий устуворлик ҳисобланмайди: ҳар бир йўналиш эксперт комиссиясида баҳоланади.')}</p></div>` : ''}
+  </div></section>`;
+}
+
+function viewAbout(){
+  return `<div class="wrap"><div class="prose">
+    <div class="eyebrow">${T('Лойиҳа паспорти')}</div>
+    <h1>${T('Лойиҳа ҳақида')}</h1>
+    <p>${T('YO‘L ILMI — йўл хўжалиги муаммоларини аҳоли ва мутахассислар фикри асосида ўрганиш, илмий тадқиқотлар учун далилли устуворликлар ишлаб чиқиш мақсадидаги республика аноним илмий сўров платформаси.')}</p>
+    <dl class="kv" style="margin-top:22px">
+      <dt>${T('Ташаббускор')}</dt><dd>${T('Автомобил йўллари илмий-тадқиқот институти')}</dd>
+      <dt>${T('Ҳудудий қамров')}</dt><dd>${T('Қорақалпоғистон Республикаси, 12 та вилоят ва Тошкент шаҳри (14 ҳудуд)')}</dd>
+      <dt>${T('Аудиториялар')}</dt><dd>${T('Аҳоли (18+); соҳадаги мутахассислар (иш жойини аниқ кўрсатмасдан)')}</dd>
+      <dt>${T('Кириш')}</dt><dd>${T('Мобил ва десктоп веб-сайт, QR-код')}</dd>
+      <dt>${T('Тиллар')}</dt><dd>${T('Ўзбек (лотин ва кирилл); кейинги босқичда рус тили')}</dd>
+      <dt>${T('Асосий натижа')}</dt><dd>${T('Ҳудудий умумлаштирилган ҳисобот, муаммолар матрицаси, илмий-тадқиқот таклифлари, жамоатчилик учун умумий дашборд')}</dd>
+    </dl>
+    <h2>${T('Мақсад ва илмий натижа')}</h2>
+    <ul>
+      <li>${T('Аҳоли кузатувларини алоҳида тадқиқот блокида йиғиш; йўл сифати ва қулайлигига оид сигналларни аниқлаш.')}</li>
+      <li>${T('Мутахассислар орқали муаммоларнинг эҳтимолий техник сабаблари, меъёрий камчиликлар ва инновацияларга эҳтиёжни ўрганиш.')}</li>
+      <li>${T('Икки аудитория хулосаларини бирлаштирмасдан, қиёсий мавзуларда мустақил кўрсаткичлар сифатида тақдим этиш.')}</li>
+      <li>${T('Натижалар бўйича илмий гипотеза, пилот-тажриба ва йўналишлар портфелини шакллантириш.')}</li>
+    </ul>
+    <h2>${T('Натижаларни илмий талқин қилиш')}</h2>
+    <ol>
+      <li>${T('Аудитория кесимида қайтарилувчи сигналларни аниқлаш')}</li>
+      <li>${T('Маълумот сифатини текшириш')}</li>
+      <li>${T('Техник асос ва адабиёт билан солиштириш')}</li>
+      <li>${T('Муаммоларни алоҳида эксперт комиссиясида баҳолаш')}</li>
+      <li>${T('Тадқиқот мавзуси, методика ва тажриба-синов режасини тасдиқлаш')}</li>
+    </ol>
+    <p class="muted">${T('Масалан, аҳолининг «сув тўпланиши» кузатуви ва мутахассисларнинг дренаж ҳисоблари бўйича фикри намликка чидамли йўл конструкцияларини синаш гипотезасини шакллантириши мумкин. Бу ҳали сабабнинг исботи эмас.')}</p>
+    <h2>${T('Тарқатиш каналлари')}</h2>
+    <p>${T('QR-кодлар, ташкилотлар сайтлари, Telegram, соҳавий касбий гуруҳлар ва ҳудудий ҳамкорлар.')}</p>
+  </div></div>`;
+}
+function viewPrivacy(){
+  return `<div class="wrap"><div class="prose">
+    <div class="eyebrow">${T('Анонимлик ва хавфсизлик')}</div>
+    <h1>${T('Махфийлик сиёсати')}</h1>
+    <p>${T('Платформа аноним илмий сўров учун мўлжалланган. Қуйида қандай маълумот йиғилиши ва қандай ҳимояланиши баён қилинган.')}</p>
+    <h2>${T('Нима сўралмайди')}</h2>
+    <p>${T('Ф.И.Ш., телефон, ЖШШИР, паспорт маълумотлари, аниқ манзил ва ташкилот номи сўралмайди. OneID интеграцияси респондентга қўлланилмайди.')}</p>
+    <h2>${T('Нима сақланади')}</h2>
+    <ul>
+      <li>${T('Сўров тури (аҳоли ёки мутахассис) ва сўров версияси')}</li>
+      <li>${T('Жавоб санаси — фақат кун аниқлигида')}</li>
+      <li>${T('Ҳудуд — агар кўрсатилган бўлса')}</li>
+      <li>${T('Савол жавоблари; эркин матнда телефон, email ва ҳужжат рақамлари сақлашдан олдин автоматик ниқобланади')}</li>
+    </ul>
+    <p>${T('Жавоб ёзувида IP-манзил, браузер маълумоти, геолокация ёки доимий кузатув идентификатори сақланмайди. Жавобларни боғловчи калит тасодифий ва фақат битта анкета ичида ишлатилади.')}</p>
+    <h2>${T('Натижаларни эълон қилиш')}</h2>
+    <ul>
+      <li>${T('Кесишган статистикада 10 тадан кам жавобли гуруҳлар кўрсатилмайди; қўшни гуруҳлар орқали қайта ҳисоблаш хавфи ҳам назорат қилинади.')}</li>
+      <li>${T('Икки гуруҳ фикрлари қиёсланади, лекин битта умумий фоизга аралаштирилмайди.')}</li>
+      <li>${T('Экспорт файлларида сана ҳафта аниқлигида берилади, кичик ҳудудий гуруҳлар бирлаштирилади.')}</li>
+    </ul>
+    <h2>${T('Ҳуқуқий асос')}</h2>
+    <p>${T('Ўзбекистон Республикасининг «Шахсга доир маълумотлар тўғрисида»ги Қонуни (ЎРҚ-547, 2019) ва «Киберхавфсизлик тўғрисида»ги Қонуни (ЎРҚ-764, 2022).')} <a href="https://lex.uz/docs/4396419" target="_blank" rel="noopener">lex.uz/docs/4396419</a> · <a href="https://lex.uz/mact/5960604" target="_blank" rel="noopener">lex.uz/mact/5960604</a></p>
+    <div class="notice" style="margin-top:22px"><div><b>${T('Пилот версия.')}</b> ${T('Республика миқёсида ишга туширишдан олдин хостинг, логлар ва маълумотларни сақлаш муддати бўйича юридик ва ахборот хавфсизлиги текшируви ўтказилади.')}</div></div>
+  </div></div>`;
+}
+
+/* ----- Admin ----- */
+const ADM_TABS = [['overview','Мониторинг'],['analysis','Натижалар таҳлили'],['regions','Ҳудудлар'],['texts','Очиқ жавоблар'],['topics','Тадқиқот портфели'],['links','Таклиф ҳаволалари'],['reports','Ҳисоботлар'],['config','Сўров созламалари'],['audit','Аудит журнали']];
+function viewAdmin(){
+  if (!SB_OK) return `<div class="wrap"><div class="card login"><span class="tag warn">${T('Созланмаган')}</span><h1>${T('Платформа базага уланмаган')}</h1><p class="muted">${T('config.js файлига Supabase лойиҳа манзили ва калитини киритинг. Батафсил қадамлар ЙЎРИҚНОМА файлида.')}</p></div></div>`;
+  if (!S.ready) return `<div class="wrap"><div class="card empty-state" style="margin-block:48px"><h3>${T('Юкланмоқда…')}</h3></div></div>`;
+  if (!S.session){
+    const L = S.login;
+    return `<div class="wrap"><form class="card login" id="loginForm" novalidate>
+      <div class="eyebrow">${T('Бошқарув панели')}</div><h1>${T('Админ кириши')}</h1>
+      <p class="muted" style="font-size:14px">${T('Фақат тадқиқот гуруҳи аъзолари учун. Респондентлар учун кириш талаб қилинмайди.')}</p>
+      <div class="field"><label for="lg-email">Email</label><input type="email" id="lg-email" autocomplete="username" value="${esc(L.email)}" required></div>
+      <div class="field"><label for="lg-pass">${T('Парол')}</label><input type="password" id="lg-pass" autocomplete="current-password" required></div>
+      ${L.err ? `<div class="err">${esc(L.err)}</div>` : ''}
+      <button class="btn btn-primary" type="submit" ${L.busy ? 'disabled' : ''}>${T(L.busy ? 'Текширилмоқда…' : 'Кириш')}</button>
+    </form></div>`;
+  }
+  if (!S.isAdmin) return `<div class="wrap"><div class="card login">${I.lock}<h1>${T('Админ ҳуқуқи йўқ')}</h1><p class="muted">${esc(S.email)} — ${T('бу аккаунт администраторлар рўйхатида эмас. Суперадминга мурожаат қилинг.')}</p><div class="row"><button class="btn btn-ghost" data-act="logout">${T('Чиқиш')}</button></div></div></div>`;
+  const newTexts = S.responses.filter(r => r.review && r.review.status === 'new').length;
+  const tab = S.adm.tab;
+  const rail = `<nav class="rail" aria-label="${T('Админ бўлимлари')}"><div class="eyebrow">${T('Бошқарув панели')}</div>${ADM_TABS.map(([k,l]) => `<button data-act="admTab" data-v="${k}" aria-current="${tab===k}"><span>${T(l)}</span>${k==='texts' && newTexts ? `<span class="cnt">${newTexts}</span>` : ''}</button>`).join('')}
+    <div style="padding:14px 12px 0;display:grid;gap:8px;font-size:13px" class="muted"><span style="overflow-wrap:anywhere">${esc(S.email)}</span><span>${T('Янгиланди')}: ${S.loadedAt ? esc(dt(S.loadedAt)).slice(-5) : '—'}</span>
+      <div class="row"><button class="btn btn-ghost btn-sm" data-act="refresh" ${S.loading ? 'disabled' : ''}>${T(S.loading ? 'Юкланмоқда…' : 'Янгилаш')}</button><button class="btn btn-ghost btn-sm" data-act="logout">${T('Чиқиш')}</button></div></div></nav>`;
+  const fn = { links: admLinks, overview: admOverview, analysis: admAnalysis, regions: admRegions, texts: admTexts, topics: admTopics, reports: admReports, config: admConfig, audit: admAudit }[tab];
+  return `<div class="wrap"><div class="adm">${rail}<div class="adm-main">${S.loadErr ? `<div class="notice bad"><div><b>${T('Маълумотларни юклаб бўлмади.')}</b> ${esc(S.loadErr)}</div></div>` : ''}${fn()}</div></div></div>`;
+}
+const audSeg = (key, v) => `<div class="tabs" role="tablist">${['citizen','expert'].map(a => `<button role="tab" data-act="admSet" data-k="${key}" data-v="${a}" aria-selected="${v===a}">${T(AUD_LABEL[a])}</button>`).join('')}</div>`;
+
+function admOverview(){
+  const all = S.responses, comp = completed();
+  const starts = S.starts.citizen + S.starts.expert;
+  const by = a => comp.filter(r => r.audience === a).length;
+  const regs = new Set(comp.filter(r => r.region != null).map(r => r.region));
+  const noReg = comp.filter(r => r.region == null).length;
+  const texts = comp.filter(r => r.review && r.review.status !== 'none').length;
+  const piiN = comp.filter(r => r.text_pii_masked).length;
+  const approved = S.topics.filter(t => t.status === 'approved').length;
+  const rate = starts ? Math.min(100, pct(comp.length, starts)) : null;
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Бошқарув панели')}</div><h1>${T('Мониторинг')}</h1></div>
+      <div class="row"><span class="tag ${audOpen('citizen') ? 'ok' : 'bad'}">${T('Аҳоли')}: ${T(audOpen('citizen') ? 'очиқ' : 'ёпиқ')}</span><span class="tag ${audOpen('expert') ? 'ok' : 'bad'}">${T('Мутахассислар')}: ${T(audOpen('expert') ? 'очиқ' : 'ёпиқ')}</span><span class="tag">${T('Версия')} ${esc(cfgVersion())}</span></div></div>
+    ${!comp.length ? `<div class="notice info"><div><b>${T('Ҳали тугалланган жавоб йўқ.')}</b> ${T('Сўров ҳаволасини тарқатинг ёки сўровни ўзингиз тўлдириб, платформани синаб кўринг. Кўрсаткичлар жавоблар келиши билан жонли янгиланади.')}</div></div>` : ''}
+    <div class="kpis">
+      <div class="card kpi"><div class="eyebrow">${T('Аҳоли жавоблари')}</div><div class="v">${fmt(by('citizen'))}</div><div class="s">${T('тугалланган')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('Мутахассис жавоблари')}</div><div class="v">${fmt(by('expert'))}</div><div class="s">${T('тугалланган')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('Якунлаш улуши')}</div><div class="v">${rate == null ? '—' : rate + '%'}</div><div class="s">${fmt(comp.length)} / ${fmt(Math.max(starts, comp.length))} ${T('бошланган')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('14 ҳудуд қамрови')}</div><div class="v">${regs.size} / 14</div><div class="s">${T('кўрсатилмаган')}: ${fmt(noReg)}</div></div>
+    </div>
+    <div class="card panel"><div class="sec-head" style="margin-bottom:10px"><h3 style="margin:0">${T('Кунлик жавоблар, охирги 30 кун')}</h3><div class="legend"><span><i style="background:var(--sign)"></i>${T('Аҳоли')}</span><span><i style="background:var(--c2)"></i>${T('Мутахассислар')}</span></div></div>${dailyChart(comp)}</div>
+    <div class="kpis">
+      <div class="card kpi"><div class="eyebrow">${T('Очиқ жавоблар')}</div><div class="v">${fmt(texts)}</div><div class="s">${T('шундан янги')}: ${fmt(comp.filter(r => r.review && r.review.status === 'new').length)}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('Ниқобланган матнлар')}</div><div class="v">${fmt(piiN)}</div><div class="s">${T('шахсий маълумот яширилган')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('Тадқиқотга айланган')}</div><div class="v">${fmt(approved)}</div><div class="s">${T('эксперт тасдиқлаган вазифа')}</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('Охирги эълон')}</div><div class="v" style="font-size:18px">${S.summary ? esc(dt(S.summary.published_at)) : '—'}</div><div class="s">${T('оммавий натижалар')}</div></div>
+    </div>`;
+}
+function dailyChart(comp){
+  const days = []; const end = new Date(todayBucket() + 'T00:00:00Z');
+  for (let i = 29; i >= 0; i--){ const d = new Date(end); d.setUTCDate(d.getUTCDate() - i); days.push(d.toISOString().slice(0,10)); }
+  const c = days.map(d => comp.filter(r => r.date_bucket === d && r.audience === 'citizen').length);
+  const e = days.map(d => comp.filter(r => r.date_bucket === d && r.audience === 'expert').length);
+  const max = Math.max(4, ...c, ...e); const step = Math.ceil(max / 4); const top = step * 4;
+  const W = 720, H = 200, L = 34, B = 24, R = 6, cw = (W - L - R) / 30, bw = Math.max(2, cw / 2 - 2);
+  const y = v => (H - B) - v / top * (H - B - 10);
+  let g = '';
+  for (let k = 0; k <= 4; k++){ const v = step * k; g += `<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`; }
+  days.forEach((d,i) => {
+    const x = L + i * cw + 1;
+    if (c[i]) g += `<rect x="${x}" y="${y(c[i])}" width="${bw}" height="${(H-B) - y(c[i])}" rx="1.5" fill="var(--sign)"><title>${dmy(d)}: ${c[i]}</title></rect>`;
+    if (e[i]) g += `<rect x="${x + bw + 1}" y="${y(e[i])}" width="${bw}" height="${(H-B) - y(e[i])}" rx="1.5" fill="var(--c2)"><title>${dmy(d)}: ${e[i]}</title></rect>`;
+    if (i % 5 === 0 || i === 29) g += `<text x="${x + bw}" y="${H - 6}" text-anchor="middle">${d.slice(8,10)}.${d.slice(5,7)}</text>`;
+  });
+  return `<div style="overflow-x:auto"><svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${T('Кунлик жавоблар диаграммаси')}" style="min-width:520px">${g}</svg></div>`;
+}
+function admFilters(withAud){
+  const f = S.adm;
+  return `<div class="card filters">
+    ${withAud ? `<div class="field" style="flex:0 0 auto;min-width:0"><span class="lbl">${T('Аудитория')}</span>${audSeg('aud', f.aud)}</div>` : ''}
+    <div class="field"><label for="f-region">${T('Ҳудуд')}</label><select id="f-region" data-set="region"><option value="all" ${f.region==='all'?'selected':''}>${T('Барча ҳудудлар')}</option>${REGIONS.map((r,i) => `<option value="${i}" ${f.region===String(i)?'selected':''}>${T(r)}</option>`).join('')}<option value="none" ${f.region==='none'?'selected':''}>${T('Кўрсатилмаган')}</option></select></div>
+    <div class="field"><label for="f-from">${T('Санадан')}</label><input type="date" id="f-from" data-set="from" value="${esc(f.from)}"></div>
+    <div class="field"><label for="f-to">${T('Санагача')}</label><input type="date" id="f-to" data-set="to" value="${esc(f.to)}"></div>
+    <label class="check"><input type="checkbox" id="f-hide" data-set="hideSmall" ${f.hideSmall ? 'checked' : ''}><span>${T('n<10 ни яшириш')}</span></label>
+  </div>`;
+}
+function filtered(aud){
+  const f = S.adm;
+  return completed(aud).filter(r => (f.region === 'all' || (f.region === 'none' ? r.region == null : r.region === +f.region)) && (!f.from || r.date_bucket >= f.from) && (!f.to || r.date_bucket <= f.to));
+}
+function admAnalysis(){
+  const aud = S.adm.aud, list = filtered(aud);
+  const textQ = qs(aud).find(q => q.type === 'text');
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Ички илмий таҳлил')}</div><h1>${T('Натижалар таҳлили')}</h1></div></div>
+    ${admFilters(true)}
+    <div class="row"><span class="tag ${aud==='citizen'?'sign':'c2'}">${T(AUD_LABEL[aud])}</span><span class="muted">${T('Танланган жавоблар')}: <b class="num">${fmt(list.length)}</b></span></div>
+    ${list.length && list.length < MIN_N ? `<div class="notice"><div><b>${T('Кичик гуруҳ (n<10).')}</b> ${T('Бу кесимдаги натижалар статистик жиҳатдан ишончсиз ва шахсни аниқлаш хавфи бор. Ташқи ҳисоботларга киритманг.')}</div></div>` : ''}
+    ${!list.length ? `<div class="card empty-state"><h3>${T('Танланган кесимда жавоб йўқ')}</h3><p>${T('Филтрларни ўзгартиринг ёки жавоблар келишини кутинг.')}</p></div>` :
+      `<div class="qgrid">${qs(aud).map((q,i) => ({q,i})).filter(({q}) => q.type !== 'text').map(({q,i}) => qCard(q, i, aggQ(q, list), aud, { hide: S.adm.hideSmall })).join('')}
+        ${textQ ? `<article class="card qc"><span class="eyebrow">${T('Очиқ савол')}</span><h4>${T(qText(textQ))}</h4><div class="nline">n = ${fmt(aggQ(textQ, list).n)}</div><button class="btn btn-ghost btn-sm" data-act="admTab" data-v="texts">${T('Очиқ жавобларни кўриш')}</button></article>` : ''}</div>`}`;
+}
+function admRegions(){
+  const hide = S.adm.hideSmall;
+  const lc = completed('citizen'), le = completed('expert');
+  const rc = regionCounts(lc), re = regionCounts(le);
+  const sc = hide ? suppress(rc) : rc, se = hide ? suppress(re) : re;
+  const m4 = regionMean(lc, 'c04'), m8 = regionMean(lc, 'c08'), e8 = regionMean(le, 'e08');
+  const cell = v => v == null ? '<span class="lt">&lt;10</span>' : fmt(v);
+  const mcell = x => (!x.n || (hide && x.n < MIN_N)) ? '<span class="lt">—</span>' : x.mean.toFixed(2).replace('.', ',') + (x.n < MIN_N ? ' <span class="lt">n=' + x.n + '</span>' : '');
+  const cov = a => a.slice(0, NOREG).filter(v => v > 0).length;
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Ҳудудий кесим')}</div><h1>${T('Ҳудудлар')}</h1></div>
+    <label class="check"><input type="checkbox" id="r-hide" data-set="hideSmall" ${hide ? 'checked' : ''}><span>${T('n<10 ни яшириш')}</span></label></div>
+    <div class="kpis"><div class="card kpi"><div class="eyebrow">${T('Аҳоли қамрови')}</div><div class="v">${cov(rc)} / 14</div></div><div class="card kpi"><div class="eyebrow">${T('Мутахассис қамрови')}</div><div class="v">${cov(re)} / 14</div></div>
+      <div class="card kpi"><div class="eyebrow">${T('n≥10 ҳудудлар (аҳоли)')}</div><div class="v">${rc.slice(0,NOREG).filter(v => v >= MIN_N).length}</div></div><div class="card kpi"><div class="eyebrow">${T('n≥10 ҳудудлар (мутахассис)')}</div><div class="v">${re.slice(0,NOREG).filter(v => v >= MIN_N).length}</div></div></div>
+    <div class="tbl-wrap"><table><thead><tr><th>${T('Ҳудуд')}</th><th class="n">${T('Аҳоли')}</th><th class="n">${T('Йўл ҳолати')}</th><th class="n">${T('Таъмирдан қониқиш')}</th><th class="n">${T('Мутахассислар')}</th><th class="n">${T('Хом ашё истиқболи')}</th></tr></thead><tbody>
+      ${REGIONS.map((r,i) => `<tr><td>${T(r)}</td><td class="n">${cell(sc[i])}</td><td class="n">${mcell(m4[i])}</td><td class="n">${mcell(m8[i])}</td><td class="n">${cell(se[i])}</td><td class="n">${mcell(e8[i])}</td></tr>`).join('')}
+      <tr><td class="muted">${T('Кўрсатилмаган')}</td><td class="n">${cell(sc[NOREG])}</td><td class="n"><span class="lt">—</span></td><td class="n"><span class="lt">—</span></td><td class="n">${cell(se[NOREG])}</td><td class="n"><span class="lt">—</span></td></tr>
+      <tr><td><b>${T('Жами')}</b></td><td class="n"><b>${fmt(lc.length)}</b></td><td class="n"></td><td class="n"></td><td class="n"><b>${fmt(le.length)}</b></td><td class="n"></td></tr>
+    </tbody></table></div>
+    <p class="muted" style="font-size:13px">${T('Баҳолар 1–5 шкалада ўртача қиймат. Яширилганда «<10» ва ўртачалар n<10 бўлган ҳудудларда кўрсатилмайди; битта кичик ячейка бўлса, қайта ҳисоблашнинг олдини олиш учун кейинги энг кичиги ҳам яширилади.')}</p>`;
+}
+function admTexts(){
+  const f = S.adm, aud = f.tAud, tq = aud === 'citizen' ? 'c13' : 'e15';
+  const all = completed(aud).filter(r => r.answers && r.answers[tq]);
+  const tc = themeCounts(aud, all);
+  let list = all.filter(r => (r.review && r.review.status) === f.tStatus || (f.tStatus === 'all'));
+  if (f.tTheme) list = list.filter(r => (r.review.themes || []).includes(f.tTheme));
+  list = list.slice().sort((a,b) => (b.date_bucket || '').localeCompare(a.date_bucket || '')).slice(0, 200);
+  const cnt = s => all.filter(r => r.review && r.review.status === s).length;
+  const stBtn = (k, l) => `<button role="tab" data-act="admSet" data-k="tStatus" data-v="${k}" aria-selected="${f.tStatus===k}">${T(l)} <span class="mono">${k==='all' ? all.length : cnt(k)}</span></button>`;
+  const unreviewed = all.filter(r => r.review.status === 'new' && !(r.review.themes || []).length);
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Тематик таҳлил')}</div><h1>${T('Очиқ жавоблар')}</h1></div>${audSeg('tAud', aud)}</div>
+    <div class="row" style="justify-content:space-between"><div class="tabs" role="tablist">${stBtn('new','Янги')}${stBtn('reviewed','Кўриб чиқилган')}${stBtn('rejected','Рад этилган')}${stBtn('all','Барчаси')}</div>
+      ${S.sample ? `<button class="btn btn-ghost btn-sm" data-act="aiSuggest" ${S.aiBusy || !unreviewed.length ? 'disabled' : ''}>${T(S.aiBusy ? 'AI таҳлил қилмоқда…' : 'AI билан мавзу таклиф қилиш')} ${unreviewed.length ? '(' + Math.min(25, unreviewed.length) + ')' : ''}</button>` : ''}</div>
+    ${S.aiErr ? `<div class="notice bad"><div>${esc(S.aiErr)}</div></div>` : ''}
+    ${S.sample ? `<p class="muted" style="font-size:13px">${T('AI фақат ниқобланган матнларни кўради ва мавзу таклиф қилади; таклиф қабул қилинмагунча ҳеч нарса сақланмайди. Ташқи AI хизматидан фойдаланиш ҳуқуқий баҳолашдан ўтиши керак.')}</p>` : ''}
+    <div class="card panel"><span class="lbl">${T('Мавзу бўйича филтр (кўриб чиқилганлар сони)')}</span><div class="chips" style="margin-top:10px"><button class="chip" data-act="admSet" data-k="tTheme" data-v="" aria-pressed="${!f.tTheme}">${T('Барча мавзулар')}</button>${THEMES[aud].map(([id]) => `<button class="chip" data-act="admSet" data-k="tTheme" data-v="${id}" aria-pressed="${f.tTheme===id}">${esc(themeLabel(aud,id))}<span class="k">${tc[id]}</span></button>`).join('')}</div></div>
+    ${!list.length ? `<div class="card empty-state"><h3>${T('Бу рўйхатда матн йўқ')}</h3><p>${T('Респондентлар очиқ саволга жавоб ёзганда улар шу ерда пайдо бўлади.')}</p></div>` :
+      list.map(r => {
+        const rv = r.review || {}, th = rv.themes || [], sug = (S.ai[r.id] || []).filter(x => !th.includes(x));
+        return `<article class="card txt">
+          <div class="txt-meta"><span class="tag">${esc(regionName(r.region))}</span><span class="mono">${T('ҳафта')} ${dmy(weekBucket(r.date_bucket))}</span>${r.text_pii_masked ? `<span class="tag warn">${T('Шахсий маълумот яширилган')}</span>` : ''}<span class="tag ${rv.status==='reviewed'?'ok':rv.status==='rejected'?'bad':'sign'}">${T(rv.status==='reviewed'?'Кўриб чиқилган':rv.status==='rejected'?'Рад этилган':'Янги')}</span></div>
+          <div class="txt-body">${esc(r.answers[tq])}</div>
+          <div class="chips">${THEMES[aud].map(([id]) => `<button class="chip" data-act="theme-tag" data-id="${esc(r.id)}" data-v="${id}" aria-pressed="${th.includes(id)}">${esc(themeLabel(aud,id))}</button>`).join('')}</div>
+          ${sug.length ? `<div class="row"><span class="muted" style="font-size:13px">${T('AI таклифи')}:</span>${sug.map(id => `<button class="chip ai" data-act="theme-tag" data-id="${esc(r.id)}" data-v="${id}" aria-pressed="false">+ ${esc(themeLabel(aud,id))}</button>`).join('')}</div>` : ''}
+          <div class="row"><button class="btn btn-primary btn-sm" data-act="rv-status" data-id="${esc(r.id)}" data-v="reviewed" ${rv.status==='reviewed'?'disabled':''}>${T('Кўриб чиқилди деб белгилаш')}</button><button class="btn btn-ghost btn-sm" data-act="rv-status" data-id="${esc(r.id)}" data-v="rejected" ${rv.status==='rejected'?'disabled':''}>${T('Рад этиш')}</button>${rv.status!=='new' ? `<button class="btn btn-ghost btn-sm" data-act="rv-status" data-id="${esc(r.id)}" data-v="new">${T('Янгига қайтариш')}</button>` : ''}</div>
+        </article>`; }).join('')}`;
+}
+function admTopics(){
+  const tf = S.tf;
+  const allThemes = [...THEMES.citizen.map(([id,l]) => ['citizen', id, l]), ...THEMES.expert.map(([id,l]) => ['expert', id, l])];
+  const evid = key => { const [a, id] = key.split(':'); return themeCounts(a, completed(a))[id] || 0; };
+  const form = tf ? `<div class="card panel"><h3>${T(tf.id ? 'Йўналишни таҳрирлаш' : 'Янги тадқиқот йўналиши')}</h3>
+      <div class="formgrid">
+        <div class="field full"><label for="tf-name">${T('Йўналиш номи')}</label><input type="text" id="tf-name" data-tf="name" value="${esc(tf.name)}" maxlength="200"></div>
+        <div class="field full"><label for="tf-ev">${T('Далиллар хулосаси (гипотеза)')}</label><textarea id="tf-ev" data-tf="evidence" maxlength="1200">${esc(tf.evidence)}</textarea></div>
+        <div class="field"><label for="tf-owner">${T('Масъул рол')}</label><select id="tf-owner" data-tf="owner_role">${OWNER_ROLES.map(r => `<option value="${esc(r)}" ${tf.owner_role===r?'selected':''}>${T(r)}</option>`).join('')}</select></div>
+        <div class="field"><label for="tf-status">${T('Ҳолат')}</label><select id="tf-status" data-tf="status">${TOPIC_STATUS.map(([k,l]) => `<option value="${k}" ${tf.status===k?'selected':''}>${T(l)}</option>`).join('')}</select></div>
+        <div class="field full"><span class="lbl">${T('Боғлиқ мавзулар (очиқ жавоблардан)')}</span><div class="chips">${allThemes.filter(([,id]) => id !== 'other').map(([a,id,l]) => `<button class="chip" data-act="tf-theme" data-v="${a}:${id}" aria-pressed="${tf.themes.includes(a+':'+id)}">${a==='citizen'?'A':'M'} · ${T(l)}<span class="k">${evid(a+':'+id)}</span></button>`).join('')}</div></div>
+        <label class="check full"><input type="checkbox" id="tf-public" data-tf="public" ${tf.public ? 'checked' : ''}><span>${T('Оммавий натижалар саҳифасида кўрсатиш (кейинги эълонда)')}</span></label>
+      </div>
+      ${tf.err ? `<div class="err">${T(tf.err)}</div>` : ''}
+      <div class="row" style="margin-top:16px"><button class="btn btn-primary" data-act="tf-save">${T('Йўналишни сақлаш')}</button><button class="btn btn-ghost" data-act="tf-cancel">${T('Бекор қилиш')}</button></div></div>` : '';
+  const list = S.topics.slice().sort((a,b) => (b.updated || 0) - (a.updated || 0));
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Мавзулар ва таклифлар')}</div><h1>${T('Тадқиқот портфели')}</h1></div>${!tf ? `<button class="btn btn-primary" data-act="tf-new">${T('Йўналиш қўшиш')}</button>` : ''}</div>
+    <p class="muted" style="max-width:70ch">${T('Сигналдан тадқиқотгача: такрорланувчи муаммолар эксперт комиссиясида баҳоланади, тасдиқланган йўналишлар «Тадқиқотга айланган муаммолар» KPI сифатида ҳисобланади.')}</p>
+    ${form}
+    ${!list.length && !tf ? `<div class="card empty-state"><h3>${T('Портфел ҳали бўш')}</h3><p>${T('Очиқ жавоблар ва натижалар асосида биринчи илмий гипотеза ёки тажриба-синов йўналишини қўшинг.')}</p><button class="btn btn-primary" data-act="tf-new">${T('Йўналиш қўшиш')}</button></div>` : ''}
+    <div class="qgrid">${list.map(t => { const s = TOPIC_STATUS.find(x => x[0] === t.status) || TOPIC_STATUS[0];
+      return `<article class="card topic"><div class="row" style="justify-content:space-between"><span class="tag ${s[2]}">${T(s[1])}</span>${t.public ? `<span class="tag">${T('Оммавий')}</span>` : ''}</div>
+        <h4>${esc(t.name)}</h4>${t.evidence ? `<p class="muted" style="font-size:14px;white-space:pre-wrap">${esc(t.evidence)}</p>` : ''}
+        <div class="chips">${(t.themes || []).map(k => { const [a,id] = k.split(':'); return `<span class="chip">${a==='citizen'?'A':'M'} · ${esc(themeLabel(a,id))}<span class="k">${evid(k)}</span></span>`; }).join('')}</div>
+        <div class="txt-meta"><span>${T('Масъул')}: ${T(t.owner_role || '')}</span><span>· ${esc(dt(t.updated))}</span></div>
+        <div class="row">${S.confirm === 'topic:' + t.id ? `<span class="muted" style="font-size:14px">${T('Ўчирилсинми?')}</span><button class="btn btn-danger btn-sm" data-act="tf-del" data-id="${esc(t.id)}">${T('Ҳа, ўчириш')}</button><button class="btn btn-ghost btn-sm" data-act="confirm" data-v="">${T('Бекор қилиш')}</button>` :
+          `<button class="btn btn-ghost btn-sm" data-act="tf-edit" data-id="${esc(t.id)}">${T('Таҳрирлаш')}</button><button class="btn btn-ghost btn-sm" data-act="confirm" data-v="topic:${esc(t.id)}">${T('Ўчириш')}</button>`}</div></article>`; }).join('')}</div>`;
+}
+function admReports(){
+  const sm = buildSummary();
+  const cN = completed('citizen').length, eN = completed('expert').length;
+  const dates = completed().map(r => r.date_bucket).filter(Boolean).sort();
+  const method = tt('Методика. Сўров ') + (dates.length ? dmy(dates[0]) + '–' + dmy(dates[dates.length-1]) : '—') + tt(' даврида YO‘L ILMI платформасида очиқ ва ихтиёрий аноним онлайн анкета шаклида ўтказилди (версия ') + cfgVersion() + tt('). Аҳоли йўналиши бўйича ') + cN + tt(' та, мутахассислар йўналиши бўйича ') + eN + tt(' та тугалланган анкета олинди. Танланма эҳтимолий эмас, шу сабабли натижалар қатнашчилар фикрини акс эттиради ва бутун аҳоли ёки соҳага умумлаштирилмайди. Ҳар бир савол учун ҳақиқий жавоб берганлар сони (n) алоҳида келтирилади; икки аудитория натижалари бирлаштирилмайди. Махфийлик мақсадида n<10 бўлган гуруҳлар кўрсатилмайди. Эркин жавоблардаги шахсий маълумотлар автоматик ниқобланган ва мавзулар бўйича инсон томонидан кодланган.');
+  const pubA = a => sm.audiences[a].N != null;
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Экспорт ва эълон')}</div><h1>${T('Ҳисоботлар')}</h1></div></div>
+    <div class="card panel stack"><h3 style="margin:0">${T('Оммавий натижаларни эълон қилиш')}</h3>
+      <p class="muted">${T('Агрегат натижалар «Натижалар» саҳифасига чиқади. n<10 бўлган саволлар, ҳудудлар ва мавзулар автоматик яширилади; эркин матнлар эълон қилинмайди.')}</p>
+      <div class="row"><span class="tag ${pubA('citizen')?'ok':'warn'}">${T('Аҳоли')}: ${pubA('citizen') ? fmt(cN) + ' ' + T('жавоб') : T('n<10, эълон қилинмайди')}</span><span class="tag ${pubA('expert')?'ok':'warn'}">${T('Мутахассислар')}: ${pubA('expert') ? fmt(eN) + ' ' + T('жавоб') : T('n<10, эълон қилинмайди')}</span><span class="tag">${T('Оммавий йўналишлар')}: ${sm.topics.length}</span></div>
+      <div class="row">${S.confirm === 'publish' ? `<span class="muted">${T('Жорий маълумотлар оммавий саҳифага чиқади. Давом этилсинми?')}</span><button class="btn btn-mark" data-act="publish">${T('Ҳа, эълон қилиш')}</button><button class="btn btn-ghost" data-act="confirm" data-v="">${T('Бекор қилиш')}</button>` : `<button class="btn btn-mark" data-act="confirm" data-v="publish">${T('Натижаларни эълон қилиш')}</button>`}
+        ${S.summary ? `<span class="muted" style="font-size:14px">${T('Охирги эълон')}: ${esc(dt(S.summary.published_at))}</span>` : ''}${S.summary && S.confirm !== 'publish' ? `<button class="btn btn-ghost btn-sm" data-act="confirm" data-v="unpublish">${T('Эълонни олиб ташлаш')}</button>` : ''}</div>
+      ${S.confirm === 'unpublish' ? `<div class="row"><span class="muted">${T('Оммавий натижалар саҳифаси бўшатилади.')}</span><button class="btn btn-danger btn-sm" data-act="unpublish">${T('Ҳа, олиб ташлаш')}</button><button class="btn btn-ghost btn-sm" data-act="confirm" data-v="">${T('Бекор қилиш')}</button></div>` : ''}
+    </div>
+    <div class="card panel stack"><h3 style="margin:0">${T('Маълумотларни экспорт қилиш (CSV / Excel)')}</h3>
+      <p class="muted">${T('Файл UTF-8 CSV форматида бўлиб, Excel дастурида очилади. Ички идентификаторлар экспорт қилинмайди, эркин матнлар ниқобланган ҳолда берилади.')}</p>
+      <label class="check"><input type="checkbox" id="x-week" data-set="exportWeek" ${S.adm.exportWeek ? 'checked' : ''}><span>${T('Санани ҳафта аниқлигида бериш')}</span></label>
+      <label class="check"><input type="checkbox" id="x-merge" data-set="exportMerge" ${S.adm.exportMerge ? 'checked' : ''}><span>${T('n<10 бўлган ҳудудларни «Бирлаштирилган кичик ҳудудлар» деб бериш')}</span></label>
+      <div class="row"><button class="btn btn-primary" data-act="export" data-v="citizen" ${!cN?'disabled':''}>${T('Аҳоли жавоблари (CSV)')}</button><button class="btn btn-primary" data-act="export" data-v="expert" ${!eN?'disabled':''}>${T('Мутахассис жавоблари (CSV)')}</button><button class="btn btn-ghost" data-act="export" data-v="agg" ${!(cN+eN)?'disabled':''}>${T('Агрегат жадвал (CSV)')}</button></div>
+      ${S.csvFallback ? `<div class="field"><label for="csvbox">${T('Файлни юклаб бўлмади. Матнни нусхалаб, .csv файл сифатида сақланг:')}</label><textarea id="csvbox" class="copybox" readonly>${esc(S.csvFallback)}</textarea><div class="row"><button class="btn btn-ghost btn-sm" data-act="copy" data-v="csvbox">${T('Нусхалаш')}</button><button class="btn btn-ghost btn-sm" data-act="csvclose">${T('Ёпиш')}</button></div></div>` : ''}
+    </div>
+    <div class="card panel stack"><h3 style="margin:0">${T('Илмий ҳисобот учун метод баёни')}</h3>
+      <p class="muted">${T('Жорий маълумотлардан автоматик тузилади. Ҳисоботга қўшишдан олдин таҳрирланг.')}</p>
+      <textarea id="methodbox" class="copybox" readonly style="font-family:var(--f-body);font-size:14px">${esc(method)}</textarea>
+      <div class="row"><button class="btn btn-ghost btn-sm" data-act="copy" data-v="methodbox">${T('Матнни нусхалаш')}</button></div>
+    </div>`;
+}
+function admConfig(){
+  const d = S.cfgDraft || (S.cfgDraft = JSON.parse(JSON.stringify({ citizen: { open: true, closes: '' }, expert: { open: true, closes: '' }, ...(S.config || {}) })));
+  const aud = S.adm.qeAud;
+  const docs = S.responses.length;
+  const qe = S.qe;
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Ташкилий модул')}</div><h1>${T('Сўров созламалари')}</h1></div><span class="tag">${T('Жорий версия')} ${esc(cfgVersion())}</span></div>
+    <div class="card panel stack"><h3 style="margin:0">${T('Очилиш ва ёпилиш')}</h3>
+      <div class="formgrid">${['citizen','expert'].map(a => `<div class="card panel stack" style="background:var(--bg)"><b>${T(AUD_LABEL[a])}</b>
+        <label class="check"><input type="checkbox" id="cf-open-${a}" data-cf="${a}.open" ${d[a] && d[a].open !== false ? 'checked' : ''}><span>${T('Жавоблар қабул қилинади')}</span></label>
+        <div class="field"><label for="cf-cl-${a}">${T('Ёпилиш санаси (ихтиёрий)')}</label><input type="date" id="cf-cl-${a}" data-cf="${a}.closes" value="${esc((d[a] && d[a].closes) || '')}"></div></div>`).join('')}</div>
+      <div class="row"><button class="btn btn-primary" data-act="cf-save">${T('Созламаларни сақлаш')}</button></div></div>
+    <div class="card panel stack"><div class="row" style="justify-content:space-between"><h3 style="margin:0">${T('Сўров конструктори')}</h3>${audSeg('qeAud', aud)}</div>
+      <p class="muted" style="font-size:14px">${T('Савол матни (кириллда ёзинг, лотин автоматик ҳосил бўлади), мажбурийлик ва кўринишни ўзгартириш мумкин. Ҳар бир сақлаш сўров версиясини оширади. Вариантларни ўзгартириш натижалар қиёсийлигини бузади, шунинг учун у янги сўров сифатида ишлаб чиқилади.')}</p>
+      ${SURVEYS[aud].map((q,i) => { const o = ov(q), e = qe[q.id] || {}; const text = e.q ?? (o.q || q.q); const req = e.required ?? qReq(q); const hid = e.hidden ?? qHidden(q);
+        return `<div class="card qe" style="background:var(--bg)"><div class="qe-top"><span class="mono muted" style="font-size:12px">${aud==='citizen'?'A':'M'}-${pad(i+1)} · ${esc(q.type)}${q.max ? ' · max ' + q.max : ''}${q.options ? ' · ' + q.options.length + ' ' + T('вариант') : ''}</span>${o.q || typeof o.required === 'boolean' || o.hidden ? `<span class="tag warn">${T('Ўзгартирилган')}</span>` : ''}</div>
+          <textarea id="qe-${q.id}" data-qe="${q.id}" data-k="q" style="min-height:60px">${esc(text)}</textarea>
+          ${S.script === 'lat' ? `<div class="muted" style="font-size:13px">${esc(lat(text))}</div>` : ''}
+          <div class="row"><label class="check"><input type="checkbox" id="qe-r-${q.id}" data-qe="${q.id}" data-k="required" ${req ? 'checked' : ''} ${q.type==='select'?'disabled':''}><span>${T('Мажбурий')}</span></label><label class="check"><input type="checkbox" id="qe-h-${q.id}" data-qe="${q.id}" data-k="hidden" ${hid ? 'checked' : ''} ${i===0?'disabled':''}><span>${T('Яшириш')}</span></label>${o.q ? `<button class="btn btn-ghost btn-sm" data-act="qe-reset" data-id="${q.id}">${T('Асл матнга қайтариш')}</button>` : ''}</div></div>`; }).join('')}
+      <div class="row"><button class="btn btn-primary" data-act="qe-save" ${Object.keys(qe).length ? '' : 'disabled'}>${T('Ўзгаришларни нашр қилиш')}</button>${Object.keys(qe).length ? `<span class="muted" style="font-size:14px">${Object.keys(qe).length} ${T('та савол ўзгарган')}</span>` : ''}</div></div>
+    <div class="card panel stack"><h3 style="margin:0">${T('Маълумотлар омбори')}</h3>
+      <p class="muted">${T('Тугалланган жавоблар')}: <b class="num">${fmt(docs)}</b> · ${T('бошланган сўровлар')}: <b class="num">${fmt(S.starts.citizen + S.starts.expert)}</b></p>
+      <p class="muted" style="font-size:14px">${T('Резерв нусха ва маълумотлар базасини бошқариш Supabase панелида амалга оширилади.')}</p></div>`;
+}
+const linkUrl = l => siteUrl() + '?k=' + encodeURIComponent(l.token) + (l.audience ? '#' + l.audience : '');
+function admLinks(){
+  const lf = S.lf;
+  const used = tok => S.responses.filter(r => r.link_token === tok).length;
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Кириш назорати')}</div><h1>${T('Таклиф ҳаволалари')}</h1></div></div>
+    <p class="muted" style="max-width:72ch">${T('Сўровда фақат шу ердаги фаол ҳаволалар орқали қатнашиш мумкин. Ҳаволасиз кирган одам сўровни кўрмайди ва жавоб юбора олмайди. Ҳаволани канал бўйича яратинг (масалан, «Самарқанд, Telegram гуруҳи»): у шахсни эмас, тарқатиш каналини белгилайди.')}</p>
+    <div class="card panel stack"><h3 style="margin:0">${T('Янги ҳавола')}</h3>
+      <div class="formgrid">
+        <div class="field"><label for="lf-label">${T('Номи (канал)')}</label><input type="text" id="lf-label" data-lf="label" maxlength="120" value="${esc(lf.label)}"></div>
+        <div class="field"><label for="lf-aud">${T('Қайси сўров учун')}</label><select id="lf-aud" data-lf="audience"><option value="" ${!lf.audience?'selected':''}>${T('Иккала сўров')}</option><option value="citizen" ${lf.audience==='citizen'?'selected':''}>${T('Фақат аҳоли')}</option><option value="expert" ${lf.audience==='expert'?'selected':''}>${T('Фақат мутахассислар')}</option></select></div>
+      </div>
+      ${lf.err ? `<div class="err">${T(lf.err)}</div>` : ''}
+      <div class="row"><button class="btn btn-primary" data-act="lf-create">${T('Ҳавола яратиш')}</button></div></div>
+    ${!S.links.length ? `<div class="card empty-state"><h3>${T('Ҳали ҳавола йўқ')}</h3><p>${T('Биринчи ҳаволани яратинг ва уни респондентларга юборинг. Ҳаволасиз сўровни ҳеч ким тўлдира олмайди.')}</p></div>` :
+    S.links.map(l => `<article class="card txt">
+      <div class="row" style="justify-content:space-between"><div class="row"><b>${esc(l.label || '—')}</b><span class="tag ${l.audience==='citizen'?'sign':l.audience==='expert'?'c2':''}">${T(l.audience==='citizen'?'Аҳоли':l.audience==='expert'?'Мутахассислар':'Иккала сўров')}</span><span class="tag ${l.active?'ok':'bad'}">${T(l.active?'Фаол':'Ўчирилган')}</span></div><span class="muted" style="font-size:13px">${T('Жавоблар')}: <b class="num">${fmt(used(l.token))}</b> · ${esc(dt(Date.parse(l.created_at)))}</span></div>
+      <input type="text" id="lk-${esc(l.token)}" class="linkline" readonly value="${esc(linkUrl(l))}">
+      ${S.qrOpen[l.token] ? `<div class="qr-img" id="qr-${esc(l.token)}" data-url="${esc(linkUrl(l))}"></div>` : ''}
+      <div class="row"><button class="btn btn-ghost btn-sm" data-act="copy" data-v="lk-${esc(l.token)}">${T('Ҳаволани нусхалаш')}</button>
+        <button class="btn btn-ghost btn-sm" data-act="qr-toggle" data-v="${esc(l.token)}">${T(S.qrOpen[l.token] ? 'QR ни яшириш' : 'QR-код')}</button>
+        ${S.qrOpen[l.token] ? `<button class="btn btn-ghost btn-sm" data-act="qrdl" data-v="${esc(l.token)}">${T('QR (PNG) юклаб олиш')}</button>` : ''}
+        <button class="btn ${l.active?'btn-danger':'btn-ghost'} btn-sm" data-act="lf-toggle" data-v="${esc(l.token)}">${T(l.active ? 'Ҳаволани ўчириш' : 'Қайта ёқиш')}</button></div>
+    </article>`).join('')}`;
+}
+function newToken(){ const a = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'; const b = new Uint8Array(20); crypto.getRandomValues(b); return Array.from(b, x => a[x % a.length]).join(''); }
+async function createLink(){
+  const lf = S.lf; lf.err = '';
+  if (!lf.label.trim()){ lf.err = 'Ҳавола номини киритинг (масалан, канал ёки ҳудуд).'; render(); return; }
+  const row = { token: newToken(), label: lf.label.trim(), audience: lf.audience || null };
+  try { const { error } = await sb.from('access_links').insert(row); if (error) throw error; await audit('link_create', row.label); S.lf = { label: '', audience: '' }; S.qrOpen[row.token] = true; toast(tt('Ҳавола яратилди')); await loadAdmin(); }
+  catch(e){ lf.err = 'Ҳаволани яратиб бўлмади. Қайта уриниб кўринг.'; }
+  render();
+}
+async function toggleLink(tok){
+  const l = S.links.find(x => x.token === tok); if (!l) return;
+  try { const { error } = await sb.from('access_links').update({ active: !l.active }).eq('token', tok); if (error) throw error; await audit(l.active ? 'link_off' : 'link_on', l.label); l.active = !l.active; toast(tt(l.active ? 'Ҳавола ёқилди' : 'Ҳавола ўчирилди')); }
+  catch(e){ toast(tt('Амални бажариб бўлмади.')); }
+  render();
+}
+function viewLocked(){
+  if (!S.link.checked) return `<div class="wrap"><div class="card empty-state" style="margin-block:56px"><h3>${T('Юкланмоқда…')}</h3></div></div>`;
+  return `<div class="wrap"><div class="card login" style="max-width:520px">${I.lock}
+    <div class="eyebrow">${T('Ёпиқ сўров')}</div><h1>${T('Кириш фақат таклиф ҳаволаси орқали')}</h1>
+    <p class="muted">${S.link.token ? T('Бу ҳавола фаол эмас ёки муддати тугаган. Сизга ҳавола юборган ташкилотчига мурожаат қилинг.') : T('Сўровда қатнашиш учун тадқиқот гуруҳи юборган махсус ҳавола ёки QR-коддан фойдаланинг.')}</p>
+  </div></div>`;
+}
+const AUDIT_EV = { admin_open:'Админ панелга кириш', publish:'Натижалар эълон қилинди', unpublish:'Эълон олиб ташланди', export:'Экспорт', config:'Сўров созламалари ўзгарди', questions:'Саволлар ўзгарди (янги версия)', topic_save:'Тадқиқот йўналиши сақланди', topic_delete:'Тадқиқот йўналиши ўчирилди', link_create:'Таклиф ҳаволаси яратилди', link_off:'Ҳавола ўчирилди', link_on:'Ҳавола қайта ёқилди' };
+function admAudit(){
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Фақат администраторлар амаллари')}</div><h1>${T('Аудит журнали')}</h1></div></div>
+    <p class="muted">${T('Журналда фақат админ амаллари қайд этилади. Респондентлар ҳақида ҳеч қандай ёзув юритилмайди. Ёзувларни ўзгартириб ёки ўчириб бўлмайди.')}</p>
+    ${!S.audit.length ? `<div class="card empty-state"><h3>${T('Журнал бўш')}</h3></div>` :
+    `<div class="tbl-wrap"><table><thead><tr><th>${T('Вақт')}</th><th>${T('Админ')}</th><th>${T('Амал')}</th><th>${T('Объект')}</th></tr></thead><tbody>
+      ${S.audit.map(a => `<tr><td class="mono" style="white-space:nowrap">${esc(dt(a.ts))}</td><td>${esc(a.admin_email || tt('Админ'))}</td><td>${T(AUDIT_EV[a.event] || a.event)}</td><td class="muted">${esc(a.ref || '')}</td></tr>`).join('')}
+    </tbody></table></div>`}`;
+}
+
+/* ----- Ma'lumotlar qatlami (Supabase) ----- */
+async function loadPublic(){
+  if (!sb) return;
+  const [c, s] = await Promise.all([
+    sb.from('survey_config').select('data').eq('id', 1).maybeSingle(),
+    sb.from('public_summary').select('data').eq('id', 1).maybeSingle()
+  ]);
+  if (!c.error) S.config = c.data ? c.data.data : null;
+  if (!s.error) S.summary = s.data ? s.data.data : null;
+}
+async function checkAdmin(){
+  S.isAdmin = false; S.role = '';
+  const { data } = await sb.auth.getSession();
+  S.session = data && data.session || null;
+  if (!S.session) return;
+  S.email = S.session.user.email || '';
+  const r = await sb.from('admin_users').select('role,active').eq('user_id', S.session.user.id).maybeSingle();
+  S.isAdmin = !!(r.data && r.data.active); S.role = (r.data && r.data.role) || '';
+}
+async function loadAdmin(){
+  if (!sb || !S.isAdmin || S.loading) return;
+  S.loading = true; S.loadErr = '';
+  try {
+    const all = [];
+    for (let from = 0; ; from += 1000){
+      const { data, error } = await sb.from('responses').select('id,audience,version,date_bucket,region,answers,text_pii_masked,review,link_token').order('date_bucket', { ascending: true }).range(from, from + 999);
+      if (error) throw error;
+      all.push(...data); if (data.length < 1000) break;
+    }
+    S.responses = all.map(r => ({ ...r, status: 'completed' }));
+    const st = await Promise.all(['citizen','expert'].map(a => sb.from('survey_starts').select('id', { count: 'exact', head: true }).eq('audience', a)));
+    S.starts = { citizen: st[0].count || 0, expert: st[1].count || 0 };
+    const lk = await sb.from('access_links').select('*').order('created_at', { ascending: false }); if (lk.error) throw lk.error;
+    S.links = lk.data;
+    const t = await sb.from('research_topics').select('*'); if (t.error) throw t.error;
+    S.topics = t.data.map(x => ({ ...x, created: Date.parse(x.created_at), updated: Date.parse(x.updated_at) }));
+    const au = await sb.from('admin_audit').select('*').order('ts', { ascending: false }).limit(300); if (au.error) throw au.error;
+    S.audit = au.data.map(x => ({ ...x, ts: Date.parse(x.ts) }));
+    await loadPublic();
+    S.loadedAt = Date.now();
+  } catch(e){ S.loadErr = (e && e.message) || String(e); }
+  S.loading = false; softRender();
+}
+async function audit(event, ref){
+  if (!sb || !S.isAdmin) return;
+  try { await sb.from('admin_audit').insert({ event, ref: String(ref || '').slice(0, 300) }); } catch(e){}
+}
+async function doLogin(email, password){
+  const L = S.login; L.email = email; L.err = ''; L.busy = true; render();
+  try {
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    await checkAdmin();
+    if (S.isAdmin){ S.adminLogged = true; await audit('admin_open', ''); await loadAdmin(); }
+  } catch(e){ L.err = tt('Email ёки парол нотўғри. Қайта киритинг.'); }
+  L.busy = false; render();
+}
+async function doLogout(){
+  try { await sb.auth.signOut(); } catch(e){}
+  S.session = null; S.isAdmin = false; S.responses = []; S.topics = []; S.audit = []; S.adminLogged = false; render();
+}
+async function publishSummary(){
+  try {
+    const sm = buildSummary();
+    const { error } = await sb.from('public_summary').upsert({ id: 1, data: sm, published_at: new Date().toISOString() });
+    if (error) throw error;
+    S.summary = sm; await audit('publish', 'v' + sm.version); toast(tt('Натижалар эълон қилинди'));
+  } catch(e){ toast(tt('Эълон қилиб бўлмади. Қайта уриниб кўринг.')); }
+  S.confirm = null; render();
+}
+async function unpublish(){
+  try { const { error } = await sb.from('public_summary').delete().eq('id', 1); if (error) throw error; S.summary = null; await audit('unpublish', ''); toast(tt('Эълон олиб ташланди')); }
+  catch(e){ toast(tt('Амални бажариб бўлмади.')); }
+  S.confirm = null; render();
+}
+const csvCell = v => { const s = String(v ?? ''); return /[",;\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function buildCSV(kind){
+  const L = s => tt(s);
+  if (kind === 'agg'){
+    const rows = [[L('Аудитория'), L('Савол'), L('Вариант'), L('Сони'), L('Улуш, %'), 'n']];
+    for (const aud of ['citizen','expert']){
+      const list = completed(aud); if (!list.length) continue;
+      qs(aud).forEach((q,i) => {
+        if (q.type === 'text') return;
+        const ag = aggQ(q, list);
+        if (ag.n < MIN_N){ rows.push([L(AUD_LABEL[aud]), L(qText(q)), L('яширилган (n<10)'), '', '', '<10']); return; }
+        if (q.type === 'scale') ag.counts.forEach((c,k) => rows.push([L(AUD_LABEL[aud]), L(qText(q)), String(k+1), c, pct(c, ag.n), ag.n]));
+        else q.options.forEach((o,k) => rows.push([L(AUD_LABEL[aud]), L(qText(q)), L(o), ag.counts[k], pct(ag.counts[k], ag.n), ag.n]));
+      });
+    }
+    return rows;
+  }
+  const aud = kind, list = completed(aud), Q = qs(aud);
+  const rc = regionCounts(list);
+  const chan = r => { const l = S.links.find(x => x.token === r.link_token); return l ? l.label : ''; };
+  const rows = [['№', L('Канал'), L('Версия'), L(S.adm.exportWeek ? 'Ҳафта' : 'Сана'), L('Ҳудуд'), ...Q.map((q,i) => (aud==='citizen'?'A':'M') + '-' + pad(i+1) + ' ' + L(qText(q)))]];
+  list.slice().sort((a,b) => (a.date_bucket || '').localeCompare(b.date_bucket || '')).forEach((r, n) => {
+    const reg = r.region == null ? L('Кўрсатилмаган') : (S.adm.exportMerge && rc[r.region] < MIN_N ? L('Бирлаштирилган кичик ҳудудлар') : L(REGIONS[r.region]));
+    rows.push([n+1, chan(r), r.version || '', S.adm.exportWeek ? weekBucket(r.date_bucket) : r.date_bucket, reg, ...Q.map(q => {
+      const a = r.answers && r.answers[q.id]; if (!answered(a)) return '';
+      if (q.type === 'select') return S.adm.exportMerge ? '' : L(q.options[a]);
+      if (q.type === 'multi') return a.map(i => L(q.options[i])).join('; ');
+      if (q.type === 'text') return a;
+      if (q.type === 'scale') return a;
+      return L(q.options[a]);
+    })]);
+  });
+  return rows;
+}
+async function doExport(kind){
+  const rows = buildCSV(kind);
+  const csv = '﻿' + rows.map(r => r.map(csvCell).join(';')).join('\r\n');
+  const name = 'yol-ilmi-' + (kind === 'agg' ? 'agregat' : kind === 'citizen' ? 'aholi' : 'mutaxassis') + '-' + todayBucket() + '.csv';
+  downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), name);
+  await audit('export', name); toast(tt('Файл тайёр: ') + name);
+}
+function downloadBlob(blob, name){
+  const url = URL.createObjectURL(blob); const a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+async function saveTopic(){
+  const tf = S.tf; if (!tf.name.trim()){ tf.err = 'Йўналиш номини киритинг.'; render(); return; }
+  const body = { name: tf.name.trim(), evidence: tf.evidence.trim(), owner_role: tf.owner_role, status: tf.status, themes: tf.themes, public: !!tf.public, updated_at: new Date().toISOString() };
+  try {
+    const { error } = tf.id ? await sb.from('research_topics').update(body).eq('id', tf.id) : await sb.from('research_topics').insert(body);
+    if (error) throw error;
+    await audit('topic_save', body.name.slice(0, 80)); S.tf = null; toast(tt('Йўналиш сақланди')); await loadAdmin();
+  } catch(e){ tf.err = 'Сақлаб бўлмади. Қайта уриниб кўринг.'; }
+  render();
+}
+async function deleteTopic(id){
+  try { const { error } = await sb.from('research_topics').delete().eq('id', id); if (error) throw error; await audit('topic_delete', id); toast(tt('Йўналиш ўчирилди')); await loadAdmin(); }
+  catch(e){ toast(tt('Амални бажариб бўлмади.')); }
+  S.confirm = null; render();
+}
+async function writeConfig(body){
+  const { error } = await sb.from('survey_config').upsert({ id: 1, data: body, updated_at: new Date().toISOString() });
+  if (error) throw error; S.config = body;
+}
+async function saveConfig(){
+  const d = S.cfgDraft;
+  const body = { ...(S.config || {}), citizen: d.citizen, expert: d.expert, version: cfgVersion(), overrides: (S.config && S.config.overrides) || {} };
+  try { await writeConfig(body); await audit('config', `A:${d.citizen.open!==false?'on':'off'} ${d.citizen.closes||''} · M:${d.expert.open!==false?'on':'off'} ${d.expert.closes||''}`); S.cfgDraft = null; toast(tt('Созламалар сақланди')); }
+  catch(e){ toast(tt('Сақлаб бўлмади. Қайта уриниб кўринг.')); }
+  render();
+}
+function bumpVersion(v){ const [a, b] = String(v || '1.0').split('.'); return (a || '1') + '.' + ((+b || 0) + 1); }
+async function saveQuestions(){
+  const overrides = JSON.parse(JSON.stringify((S.config && S.config.overrides) || {}));
+  const all = [...SURVEYS.citizen, ...SURVEYS.expert];
+  for (const [id, e] of Object.entries(S.qe)){
+    const q = all.find(x => x.id === id); if (!q) continue;
+    const o = overrides[id] || {};
+    if (e.q != null){ const v = e.q.trim(); if (v && v !== q.q) o.q = v; else delete o.q; }
+    if (e.required != null){ if (e.required !== !!q.required) o.required = e.required; else delete o.required; }
+    if (e.hidden != null){ if (e.hidden) o.hidden = true; else delete o.hidden; }
+    if (Object.keys(o).length) overrides[id] = o; else delete overrides[id];
+  }
+  const nv = bumpVersion(cfgVersion());
+  const body = { citizen: { open: true, closes: '' }, expert: { open: true, closes: '' }, ...(S.config || {}), overrides, version: nv };
+  try { await writeConfig(body); await audit('questions', 'v' + nv + ': ' + Object.keys(S.qe).join(', ')); S.qe = {}; S.cfgDraft = null; toast(tt('Янги версия нашр қилинди: ') + nv); }
+  catch(e){ toast(tt('Сақлаб бўлмади. Қайта уриниб кўринг.')); }
+  render();
+}
+async function setReview(id, patch){
+  const r = S.responses.find(x => x.id === id); if (!r) return;
+  const review = { status: (r.review && r.review.status) || 'new', themes: ((r.review && r.review.themes) || []).slice(), ...patch };
+  const prev = r.review; r.review = review; softRender();
+  try { const { error } = await sb.from('responses').update({ review }).eq('id', id); if (error) throw error; }
+  catch(e){ r.review = prev; softRender(); toast(tt('Сақлаб бўлмади. Қайта уриниб кўринг.')); }
+}
+const siteUrl = () => (CONF.SITE_URL || (location.origin + location.pathname)).replace(/#.*$/, '');
+function drawQR(){
+  if (!(S.route === 'admin' && S.isAdmin && S.adm.tab === 'links' && window.QRCode)) return;
+  document.querySelectorAll('.qr-img[data-url]').forEach(el => {
+    if (el.dataset.done) return; el.dataset.done = '1';
+    new QRCode(el, { text: el.dataset.url, width: 360, height: 360, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+  });
+}
+function qrDownload(tok){
+  const el = document.getElementById('qr-' + tok); const c = el && el.querySelector('canvas'); if (!c) return;
+  const l = S.links.find(x => x.token === tok);
+  const nm = ((l && l.label) || 'havola').replace(/[^\p{L}\p{N}]+/gu, '-').slice(0, 40);
+  c.toBlob(b => b && downloadBlob(b, 'yol-ilmi-qr-' + lat(nm) + '.png'));
+}
+
+/* ---------- Asosiy render ---------- */
+function render(){
+  document.documentElement.lang = S.script === 'lat' ? 'uz-Latn' : 'uz-Cyrl';
+  const r = S.route;
+  const locked = SB_OK && r !== 'admin' && !S.link.ok && !S.isAdmin;
+  const view = locked ? viewLocked() : r === 'home' ? viewHome() : (r === 'citizen' || r === 'expert') ? viewSurvey() : r === 'results' ? viewResults() : r === 'about' ? viewAbout() : r === 'privacy' ? viewPrivacy() : viewAdmin();
+  document.getElementById('app').innerHTML = header() + `<main id="view">${view}</main>` + footer();
+  S.dirty = false;
+  drawQR();
+}
+function softRender(){
+  const a = document.activeElement;
+  if (a && (a.tagName === 'TEXTAREA' || (a.tagName === 'INPUT' && a.type === 'text'))){ S.dirty = true; return; }
+  if ((S.route === 'citizen' || S.route === 'expert') && S.sv && S.sv.stage === 'step'){ S.dirty = true; return; }
+  const y = window.scrollY; render(); window.scrollTo(0, y);
+}
+const ROUTES = ['home','citizen','expert','results','about','privacy','admin'];
+function onRoute(){
+  const h = (location.hash || '').slice(1);
+  S.route = ROUTES.includes(h) ? h : 'home';
+  if (S.link.audience && (S.route === 'citizen' || S.route === 'expert') && S.route !== S.link.audience) S.route = S.link.audience;
+  if ((S.route === 'citizen' || S.route === 'expert') && (!S.sv || S.sv.aud !== S.route || S.sv.stage === 'done')) S.sv = newSurvey(S.route);
+  if (S.route === 'admin' && S.isAdmin && !S.adminLogged){ S.adminLogged = true; audit('admin_open', ''); }
+  if (S.route === 'admin' && S.isAdmin && Date.now() - S.loadedAt > 30000) loadAdmin();
+  S.confirm = null;
+  render(); scrollTop();
+}
+
+/* ---------- Hodisalar ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act, v = b.dataset.v, id = b.dataset.id;
+  if (act === 'ack') return;
+  if (act === 'script'){ S.script = v; mem.set('yi-script', v); const y = scrollY; render(); scrollTo(0, y); return; }
+  if (act === 'theme'){
+    const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const nx = cur === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = nx; mem.set('yi-theme', nx); const y = scrollY; render(); scrollTo(0, y); return;
+  }
+  const sv = S.sv;
+  if (act === 'start') return void surveyStart();
+  if (act === 'prev'){ if (sv.step === 0) sv.stage = 'intro'; else sv.step--; sv.errors = {}; render(); scrollTop(); return; }
+  if (act === 'next'){
+    const errs = validateStep();
+    if (errs.length){ render(); const el = document.getElementById('qb-' + errs[0]); if (el){ el.scrollIntoView({ block: 'center' }); const f = el.querySelector('input,select,textarea'); if (f) f.focus({ preventScroll: true }); } return; }
+    if (sv.step < stepsOf(sv.aud).length - 1) sv.step++; else sv.stage = 'review';
+    render(); scrollTop(); return;
+  }
+  if (act === 'goto'){ sv.stage = 'step'; sv.step = +v; sv.errors = {}; render(); scrollTop(); return; }
+  if (act === 'submit') return void surveySubmit();
+  if (act === 'resAud'){ S.resAud = v; render(); return; }
+  if (act === 'admTab'){ S.adm.tab = v; S.confirm = null; render(); scrollTop(); return; }
+  if (act === 'admSet'){ S.adm[b.dataset.k] = v; render(); return; }
+  if (act === 'confirm'){ S.confirm = v || null; render(); return; }
+  if (act === 'publish') return void publishSummary();
+  if (act === 'unpublish') return void unpublish();
+  if (act === 'export') return void doExport(v);
+  if (act === 'csvclose'){ S.csvFallback = ''; render(); return; }
+  if (act === 'copy'){ const el = document.getElementById(v); if (!el) return; const p = navigator.clipboard && navigator.clipboard.writeText && navigator.clipboard.writeText(el.value); if (p) p.then(() => toast(tt('Нусхаланди')), () => { el.focus(); el.select(); toast(tt('Матн белгиланди: Ctrl+C')); }); else { el.focus(); el.select(); } return; }
+  if (act === 'theme-tag'){
+    const r = S.responses.find(x => x.id === id); if (!r) return;
+    const th = ((r.review && r.review.themes) || []).slice(); const i = th.indexOf(v); if (i >= 0) th.splice(i, 1); else th.push(v);
+    setReview(id, { themes: th }); return;
+  }
+  if (act === 'rv-status') return void setReview(id, { status: v });
+  if (act === 'aiSuggest') return void aiSuggest();
+  if (act === 'tf-new'){ S.tf = { id: null, name: '', evidence: '', owner_role: OWNER_ROLES[0], status: 'proposal', themes: [], public: false, err: '' }; render(); return; }
+  if (act === 'tf-edit'){ const t = S.topics.find(x => x.id === id); if (t){ S.tf = { id: t.id, name: t.name || '', evidence: t.evidence || '', owner_role: t.owner_role || OWNER_ROLES[0], status: t.status || 'proposal', themes: (t.themes || []).slice(), public: !!t.public, created: t.created, err: '' }; render(); scrollTop(); } return; }
+  if (act === 'tf-cancel'){ S.tf = null; render(); return; }
+  if (act === 'tf-theme'){ const th = S.tf.themes, i = th.indexOf(v); if (i >= 0) th.splice(i, 1); else th.push(v); b.setAttribute('aria-pressed', String(i < 0)); return; }
+  if (act === 'tf-save') return void saveTopic();
+  if (act === 'tf-del') return void deleteTopic(id);
+  if (act === 'logout') return void doLogout();
+  if (act === 'refresh') return void loadAdmin();
+  if (act === 'qrdl') return qrDownload(v);
+  if (act === 'qr-toggle'){ S.qrOpen[v] = !S.qrOpen[v]; render(); return; }
+  if (act === 'lf-create') return void createLink();
+  if (act === 'lf-toggle') return void toggleLink(v);
+  if (act === 'cf-save') return void saveConfig();
+  if (act === 'qe-save') return void saveQuestions();
+  if (act === 'qe-reset'){ S.qe[id] = { ...(S.qe[id] || {}), q: SURVEYS.citizen.concat(SURVEYS.expert).find(q => q.id === id).q }; render(); return; }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.id === 'ack'){ S.sv.ack = el.checked; if (el.checked && S.sv.errors._ack){ S.sv.errors._ack = false; render(); } return; }
+  if (el.dataset.q && S.sv){
+    const sv = S.sv, qid = el.dataset.q, q = SURVEYS[sv.aud].find(x => x.id === qid);
+    if (q.type === 'multi'){
+      const boxes = [...document.querySelectorAll(`input[data-q="${qid}"]`)];
+      const sel = boxes.filter(x => x.checked).map(x => +x.value);
+      sv.answers[qid] = sel;
+      boxes.forEach(x => { if (!x.checked) x.disabled = !!q.max && sel.length >= q.max; });
+    } else if (q.type === 'select') sv.answers[qid] = el.value === '' ? undefined : +el.value;
+    else if (q.type !== 'text') sv.answers[qid] = +el.value;
+    if (sv.errors[qid]){ delete sv.errors[qid]; const blk = document.getElementById('qb-' + qid); if (blk){ blk.classList.remove('has-err'); const er = document.getElementById('er-' + qid); if (er) er.remove(); } }
+    return;
+  }
+  if (el.dataset.set){ S.adm[el.dataset.set] = el.type === 'checkbox' ? el.checked : el.value; render(); return; }
+  if (el.dataset.lf){ S.lf[el.dataset.lf] = el.value; return; }
+  if (el.dataset.tf && el.type === 'checkbox'){ S.tf[el.dataset.tf] = el.checked; return; }
+  if (el.dataset.tf){ S.tf[el.dataset.tf] = el.value; return; }
+  if (el.dataset.cf){ const [a, k] = el.dataset.cf.split('.'); S.cfgDraft[a] = S.cfgDraft[a] || {}; S.cfgDraft[a][k] = el.type === 'checkbox' ? el.checked : el.value; return; }
+  if (el.dataset.qe && el.type === 'checkbox'){ S.qe[el.dataset.qe] = { ...(S.qe[el.dataset.qe] || {}), [el.dataset.k]: el.checked }; render(); return; }
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.tagName === 'TEXTAREA' && el.dataset.q && S.sv){
+    const qid = el.dataset.q; S.sv.answers[qid] = el.value;
+    const c = document.getElementById('cnt-' + qid); if (c) c.textContent = el.value.length + ' / 700';
+    const p = document.getElementById('pii-' + qid); if (p) p.hidden = !hasPII(el.value);
+    return;
+  }
+  if (el.dataset.lf){ S.lf[el.dataset.lf] = el.value; return; }
+  if (el.dataset.tf && el.type !== 'checkbox'){ S.tf[el.dataset.tf] = el.value; return; }
+  if (el.dataset.qe && el.dataset.k === 'q'){ S.qe[el.dataset.qe] = { ...(S.qe[el.dataset.qe] || {}), q: el.value }; return; }
+});
+document.addEventListener('focusout', () => { setTimeout(() => { if (S.dirty) softRender(); }, 0); });
+window.addEventListener('hashchange', onRoute);
+
+/* ---------- Ishga tushirish ---------- */
+async function checkLink(){
+  let tok = null;
+  try { tok = new URLSearchParams(location.search).get('k'); } catch(e){}
+  if (!tok){ try { tok = sessionStorage.getItem('yi-k'); } catch(e){} }
+  S.link.token = tok || null;
+  if (tok && /^[A-Za-z0-9]{12,64}$/.test(tok)){
+    try {
+      const { data, error } = await sb.rpc('check_link', { t: tok });
+      if (!error && data && data.length){ S.link.ok = true; S.link.audience = data[0].audience || null; try { sessionStorage.setItem('yi-k', tok); } catch(e){} }
+    } catch(e){}
+  }
+  S.link.checked = true;
+  if (S.link.audience && (S.route === 'citizen' || S.route === 'expert') && S.route !== S.link.audience){ S.route = S.link.audience; S.sv = newSurvey(S.route); }
+}
+async function boot(){
+  onRoute();
+  if (!sb){ S.ready = true; render(); return; }
+  await checkLink();
+  try { await loadPublic(); } catch(e){}
+  try { await checkAdmin(); } catch(e){}
+  S.ready = true; softRender();
+  if (S.isAdmin) loadAdmin();
+  sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT' && S.session){ S.session = null; S.isAdmin = false; softRender(); } });
+  setInterval(() => { if (S.isAdmin && S.route === 'admin' && document.visibilityState === 'visible') loadAdmin(); }, 60000);
+}
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'loginForm') return;
+  e.preventDefault();
+  const em = document.getElementById('lg-email').value.trim(), pw = document.getElementById('lg-pass').value;
+  if (!em || !pw){ S.login.email = em; S.login.err = tt('Email ва паролни киритинг.'); render(); return; }
+  doLogin(em, pw);
+});
+boot();
+</script>
+</body>
+</html>
