@@ -1,0 +1,27 @@
+name: Haftalik zaxira nusxa
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'   # har dushanba 09:00 (Toshkent vaqti)
+  workflow_dispatch: {}    # qo'lda ishga tushirish: Actions → "Haftalik zaxira nusxa" → Run workflow
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install --no-save --no-audit --no-fund xlsx@0.18.5 nodemailer@6.9.16
+      - run: node scripts/backup.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
