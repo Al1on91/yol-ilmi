@@ -19,6 +19,7 @@ const trSrc = html.slice(html.indexOf('const TR = '), html.indexOf('/* ---------
 const lat = new Function(trSrc + '; return lat;')();
 const REG = QDATA.regions.map(lat);
 
+{ const raw = process.env.SUPABASE_SERVICE_KEY || ''; console.log(`Kalit tekshiruvi: xom uzunlik=${raw.length}, qatorlar=${raw.split(/\n/).length}, tozalangan uzunlik=${KEY.length}, turi=${KEY.startsWith('sb_secret_') ? 'sb_secret' : KEY.startsWith('sb_publishable_') ? 'publishable (NOTO\'G\'RI)' : KEY.startsWith('eyJ') ? 'JWT' : "noma'lum"}`); }
 const headers = KEY.startsWith('sb_') ? { apikey: KEY } : { apikey: KEY, Authorization: `Bearer ${KEY}` };
 async function all(table, order){
   const out = [];
