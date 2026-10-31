@@ -20,6 +20,45 @@ html,body{margin:0}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 img{max-width:100%}
 [hidden]{display:none!important}
+.kf{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.kf li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 0;border-top:1px solid var(--line)}
+.kf li:first-child{border-top:0}
+.kf b{text-align:right;font-weight:700}
+.kf .kfp{color:var(--sign);font-weight:600}
+.c2 .kf .kfp{color:var(--c2)}
+.kf small{grid-column:1 / -1;color:var(--muted);font-size:12px}
+.resp{padding:18px;display:grid;gap:10px}
+.resp-h{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.qa{margin:0}
+.qa-row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.qa-row dt{color:var(--muted)}
+.qa-row dd{margin:0;font-weight:600;overflow-wrap:anywhere;white-space:pre-wrap}
+@media (max-width:620px){.qa-row{grid-template-columns:1fr;gap:2px}}
+.pager{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+.pdf-root{position:fixed;left:-12000px;top:0;width:760px;background:#fff;color:#14212A;font-family:'Noto Sans',Arial,sans-serif;font-size:14px;line-height:1.45}
+.pdf-block{padding:6px 4px;background:#fff}
+.pdf-cover{border-left:6px solid #E0A100;padding:18px 20px;background:#1C2529;color:#fff;border-radius:6px}
+.pdf-brand{font-weight:700;letter-spacing:.08em;color:#E0A100;font-size:13px}
+.pdf-cover h1{font-size:26px;margin:8px 0 6px;color:#fff}
+.pdf-cover p{color:#c9d3d6;margin:0;font-size:13px}
+.pk-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.pk{border:1px solid #d5dddc;border-radius:6px;padding:10px}
+.pk span{display:block;font-size:11px;color:#55666F;text-transform:uppercase;letter-spacing:.05em}
+.pk b{display:block;font-size:24px;margin-top:4px;color:#14212A}
+.pdf-h2{font-size:20px;margin:6px 0 8px;padding-bottom:6px;border-bottom:3px solid #1A5C9C;color:#14212A}
+.pdf-h2.expert{border-color:#0E7765}
+.pdf-kf{display:grid;gap:0}
+.pdf-kf div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:baseline;border-bottom:1px solid #e6ebea;padding:6px 0}
+.pdf-kf span{color:#55666F}.pdf-kf b{color:#14212A}.pdf-kf small{color:#8a979c;font-size:11px}
+.pdf-q{border:1px solid #e1e7e6;border-radius:6px;padding:10px 12px}
+.pdf-qn{font-size:11px;font-weight:700;color:#1A5C9C}
+.pdf-q h3{font-size:15px;margin:2px 0 4px;color:#14212A}
+.pdf-meta{font-size:11px;color:#55666F;margin-bottom:6px}
+.pdf-q img{width:100%;display:block}
+.pdf-h3{font-size:16px;margin:4px 0 6px;color:#14212A}
+.pdf-texts{margin:0;padding-left:18px}.pdf-texts li{margin:3px 0;font-size:12.5px}
+.pdf-t{border-collapse:collapse;width:100%;min-width:0;font-size:12px}.pdf-t th,.pdf-t td{border:1px solid #d5dddc;padding:4px 6px;text-align:left;color:#14212A}.pdf-t th{background:#eef2f1;text-transform:none;letter-spacing:0;font:600 12px 'Noto Sans',Arial,sans-serif}
+.pdf-p{font-size:12.5px;margin:0}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .qr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:700px){.qr-grid{grid-template-columns:1fr}}
@@ -398,8 +437,9 @@ const S = {
   sv: null, done: {},
   resAud: 'citizen',
   adm: { tab: 'overview', aud: 'citizen', region: 'all', from: '', to: '', hideSmall: true,
-         tAud: 'citizen', tStatus: 'new', tTheme: '', qeAud: 'citizen', exportWeek: true, exportMerge: true },
+         rAud: 'citizen', rPage: 0, rSearch: '', wordFull: false, tAud: 'citizen', tStatus: 'new', tTheme: '', qeAud: 'citizen', exportWeek: true, exportMerge: true },
   login: { email: '', err: '', busy: false },
+  xBusy: '', xErr: '',
   link: { token: null, audience: null, checked: false, ok: false }, links: [], lf: { label: '', audience: '' }, qrOpen: {},
   tf: null, qe: {}, cfgDraft: null, ai: {}, aiBusy: false, aiErr: '', confirm: null, csvFallback: '',
   dirty: false
@@ -908,7 +948,7 @@ function viewPrivacy(){
 }
 
 /* ----- Admin ----- */
-const ADM_TABS = [['overview','Мониторинг'],['analysis','Натижалар таҳлили'],['regions','Ҳудудлар'],['texts','Очиқ жавоблар'],['topics','Тадқиқот портфели'],['links','Таклиф ҳаволалари'],['reports','Ҳисоботлар'],['config','Сўров созламалари'],['audit','Аудит журнали']];
+const ADM_TABS = [['overview','Мониторинг'],['responses','Барча жавоблар'],['analysis','Натижалар таҳлили'],['regions','Ҳудудлар'],['texts','Очиқ жавоблар'],['topics','Тадқиқот портфели'],['links','Таклиф ҳаволалари'],['reports','Ҳисоботлар'],['config','Сўров созламалари'],['audit','Аудит журнали']];
 function viewAdmin(){
   if (!SB_OK) return `<div class="wrap"><div class="card login"><span class="tag warn">${T('Созланмаган')}</span><h1>${T('Платформа базага уланмаган')}</h1><p class="muted">${T('config.js файлига Supabase лойиҳа манзили ва калитини киритинг. Батафсил қадамлар ЙЎРИҚНОМА файлида.')}</p></div></div>`;
   if (!S.ready) return `<div class="wrap"><div class="card empty-state" style="margin-block:48px"><h3>${T('Юкланмоқда…')}</h3></div></div>`;
@@ -929,7 +969,7 @@ function viewAdmin(){
   const rail = `<nav class="rail" aria-label="${T('Админ бўлимлари')}"><div class="eyebrow">${T('Бошқарув панели')}</div>${ADM_TABS.map(([k,l]) => `<button data-act="admTab" data-v="${k}" aria-current="${tab===k}"><span>${T(l)}</span>${k==='texts' && newTexts ? `<span class="cnt">${newTexts}</span>` : ''}</button>`).join('')}
     <div style="padding:14px 12px 0;display:grid;gap:8px;font-size:13px" class="muted"><span style="overflow-wrap:anywhere">${esc(S.email)}</span><span>${T('Янгиланди')}: ${S.loadedAt ? esc(dt(S.loadedAt)).slice(-5) : '—'}</span>
       <div class="row"><button class="btn btn-ghost btn-sm" data-act="refresh" ${S.loading ? 'disabled' : ''}>${T(S.loading ? 'Юкланмоқда…' : 'Янгилаш')}</button><button class="btn btn-ghost btn-sm" data-act="logout">${T('Чиқиш')}</button></div></div></nav>`;
-  const fn = { links: admLinks, overview: admOverview, analysis: admAnalysis, regions: admRegions, texts: admTexts, topics: admTopics, reports: admReports, config: admConfig, audit: admAudit }[tab];
+  const fn = { responses: admResponses, links: admLinks, overview: admOverview, analysis: admAnalysis, regions: admRegions, texts: admTexts, topics: admTopics, reports: admReports, config: admConfig, audit: admAudit }[tab];
   return `<div class="wrap"><div class="adm">${rail}<div class="adm-main">${S.loadErr ? `<div class="notice bad"><div><b>${T('Маълумотларни юклаб бўлмади.')}</b> ${esc(S.loadErr)}</div></div>` : ''}${fn()}</div></div></div>`;
 }
 const audSeg = (key, v) => `<div class="tabs" role="tablist">${['citizen','expert'].map(a => `<button role="tab" data-act="admSet" data-k="${key}" data-v="${a}" aria-selected="${v===a}">${T(AUD_LABEL[a])}</button>`).join('')}</div>`;
@@ -953,6 +993,7 @@ function admOverview(){
       <div class="card kpi"><div class="eyebrow">${T('Якунлаш улуши')}</div><div class="v">${rate == null ? '—' : rate + '%'}</div><div class="s">${fmt(comp.length)} / ${fmt(Math.max(starts, comp.length))} ${T('бошланган')}</div></div>
       <div class="card kpi"><div class="eyebrow">${T('14 ҳудуд қамрови')}</div><div class="v">${regs.size} / 14</div><div class="s">${T('кўрсатилмаган')}: ${fmt(noReg)}</div></div>
     </div>
+    ${findingsHTML()}
     <div class="card panel"><div class="sec-head" style="margin-bottom:10px"><h3 style="margin:0">${T('Кунлик жавоблар, охирги 30 кун')}</h3><div class="legend"><span><i style="background:var(--sign)"></i>${T('Аҳоли')}</span><span><i style="background:var(--c2)"></i>${T('Мутахассислар')}</span></div></div>${dailyChart(comp)}</div>
     <div class="kpis">
       <div class="card kpi"><div class="eyebrow">${T('Очиқ жавоблар')}</div><div class="v">${fmt(texts)}</div><div class="s">${T('шундан янги')}: ${fmt(comp.filter(r => r.review && r.review.status === 'new').length)}</div></div>
@@ -1083,9 +1124,10 @@ function admReports(){
   const sm = buildSummary();
   const cN = completed('citizen').length, eN = completed('expert').length;
   const dates = completed().map(r => r.date_bucket).filter(Boolean).sort();
-  const method = tt('Методика. Сўров ') + (dates.length ? dmy(dates[0]) + '–' + dmy(dates[dates.length-1]) : '—') + tt(' даврида YO‘L ILMI платформасида очиқ ва ихтиёрий аноним онлайн анкета шаклида ўтказилди (версия ') + cfgVersion() + tt('). Аҳоли йўналиши бўйича ') + cN + tt(' та, мутахассислар йўналиши бўйича ') + eN + tt(' та тугалланган анкета олинди. Танланма эҳтимолий эмас, шу сабабли натижалар қатнашчилар фикрини акс эттиради ва бутун аҳоли ёки соҳага умумлаштирилмайди. Ҳар бир савол учун ҳақиқий жавоб берганлар сони (n) алоҳида келтирилади; икки аудитория натижалари бирлаштирилмайди. Махфийлик мақсадида n<10 бўлган гуруҳлар кўрсатилмайди. Эркин жавоблардаги шахсий маълумотлар автоматик ниқобланган ва мавзулар бўйича инсон томонидан кодланган.');
+  const method = methodText();
   const pubA = a => sm.audiences[a].N != null;
   return `<div class="adm-h"><div><div class="eyebrow">${T('Экспорт ва эълон')}</div><h1>${T('Ҳисоботлар')}</h1></div></div>
+    ${exportCard()}
     <div class="card panel stack"><h3 style="margin:0">${T('Оммавий натижаларни эълон қилиш')}</h3>
       <p class="muted">${T('Агрегат натижалар «Натижалар» саҳифасига чиқади. n<10 бўлган саволлар, ҳудудлар ва мавзулар автоматик яширилади; эркин матнлар эълон қилинмайди.')}</p>
       <div class="row"><span class="tag ${pubA('citizen')?'ok':'warn'}">${T('Аҳоли')}: ${pubA('citizen') ? fmt(cN) + ' ' + T('жавоб') : T('n<10, эълон қилинмайди')}</span><span class="tag ${pubA('expert')?'ok':'warn'}">${T('Мутахассислар')}: ${pubA('expert') ? fmt(eN) + ' ' + T('жавоб') : T('n<10, эълон қилинмайди')}</span><span class="tag">${T('Оммавий йўналишлар')}: ${sm.topics.length}</span></div>
@@ -1128,6 +1170,242 @@ function admConfig(){
     <div class="card panel stack"><h3 style="margin:0">${T('Маълумотлар омбори')}</h3>
       <p class="muted">${T('Тугалланган жавоблар')}: <b class="num">${fmt(docs)}</b> · ${T('бошланган сўровлар')}: <b class="num">${fmt(S.starts.citizen + S.starts.expert)}</b></p>
       <p class="muted" style="font-size:14px">${T('Резерв нусха ва маълумотлар базасини бошқариш Supabase панелида амалга оширилади.')}</p></div>`;
+}
+/* ----- Javob matnlari, xulosalar va hisobot fayllari ----- */
+function methodText(){
+  const cN = completed('citizen').length, eN = completed('expert').length;
+  const dates = completed().map(r => r.date_bucket).filter(Boolean).sort();
+  return tt('Методика. Сўров ') + (dates.length ? dmy(dates[0]) + '–' + dmy(dates[dates.length-1]) : '—') + tt(' даврида YO‘L ILMI платформасида очиқ ва ихтиёрий аноним онлайн анкета шаклида ўтказилди (версия ') + cfgVersion() + tt('). Аҳоли йўналиши бўйича ') + cN + tt(' та, мутахассислар йўналиши бўйича ') + eN + tt(' та тугалланган анкета олинди. Танланма эҳтимолий эмас, шу сабабли натижалар қатнашчилар фикрини акс эттиради ва бутун аҳоли ёки соҳага умумлаштирилмайди. Ҳар бир савол учун ҳақиқий жавоб берганлар сони (n) алоҳида келтирилади; икки аудитория натижалари бирлаштирилмайди. Махфийлик мақсадида n<10 бўлган гуруҳлар кўрсатилмайди. Эркин жавоблардаги шахсий маълумотлар автоматик ниқобланган ва мавзулар бўйича инсон томонидан кодланган.');
+}
+const optLabels = q => { if (q.type === 'scale'){ const [l, r] = scaleEnds(q); return ['1 — ' + l, '2', '3', '4', '5 — ' + r]; } return q.options || []; };
+function ansPlain(q, a){
+  if (!answered(a)) return '';
+  if (q.type === 'multi') return a.map(i => tt((q.options || [])[i] || '')).join('; ');
+  if (q.type === 'scale' || q.type === 'text') return String(a);
+  return tt((q.options || [])[a] || '');
+}
+const chanLabel = r => { const l = S.links.find(x => x.token === r.link_token); return l ? l.label : '—'; };
+const sortedResp = aud => completed(aud).slice().sort((a, b) => (b.date_bucket || '').localeCompare(a.date_bucket || '') || String(b.id).localeCompare(String(a.id)));
+const findQ = id => SURVEYS.citizen.concat(SURVEYS.expert).find(q => q.id === id);
+function topOpt(q, list){ const ag = aggQ(q, list); if (!ag.n) return null; let bi = 0; ag.counts.forEach((c, i) => { if (c > ag.counts[bi]) bi = i; }); return { label: tt(optLabels(q)[bi]), pct: pct(ag.counts[bi], ag.n), n: ag.n }; }
+function keyFindings(aud){
+  const list = completed(aud); if (!list.length) return [];
+  const out = [];
+  const mean = id => { const ag = aggQ(findQ(id), list); return ag.mean != null ? [ag.mean.toFixed(1).replace('.', ',') + ' / 5', ag.n] : null; };
+  const top = (id, pre) => { const t = topOpt(findQ(id), list); if (t) out.push([tt(pre), t.label, t.pct + '%', t.n]); };
+  const avg = (id, pre) => { const m = mean(id); if (m) out.push([tt(pre), m[0], '', m[1]]); };
+  if (aud === 'citizen'){
+    avg('c04', 'Йўллар ҳолатининг ўртача баҳоси'); top('c05', 'Энг кўп безовта қиладиган муаммо'); top('c09', 'Биринчи навбатдаги йўналиш');
+    top('c10', 'Охирги 12 ойдаги ўзгариш'); avg('c08', 'Таъмирдан қониқиш (ўртача)'); top('c11', 'Илмий тадқиқот учун устувор масала');
+  } else {
+    top('e05', 'Энг долзарб техник муаммо'); top('e06', 'Эрта нуқсонларнинг асосий сабаби'); top('e07', 'Кучайтириш керак бўлган назорат босқичи');
+    top('e12', 'Биринчи синаладиган тадқиқот йўналиши'); top('e13', 'Инновациядаги асосий тўсиқ'); avg('e08', 'Маҳаллий хом ашё истиқболи (ўртача)');
+  }
+  return out;
+}
+function findingsHTML(){
+  const blocks = ['citizen','expert'].map(aud => { const f = keyFindings(aud), n = completed(aud).length;
+    return `<div class="card panel stack ${aud === 'expert' ? 'c2' : ''}"><div class="row" style="justify-content:space-between"><h3 style="margin:0">${T(AUD_LABEL[aud])}</h3><span class="tag ${aud === 'citizen' ? 'sign' : 'c2'}">${fmt(n)} ${T('жавоб')}</span></div>
+      ${!f.length ? `<p class="muted">${T('Ҳали жавоб йўқ.')}</p>` : `<ul class="kf">${f.map(([k, v, p, nn]) => `<li><span class="muted">${esc(k)}</span><b>${esc(v)}${p ? ' <span class="kfp">' + esc(p) + '</span>' : ''}</b><small>n = ${fmt(nn)}</small></li>`).join('')}</ul>`}</div>`; });
+  return `<div class="stack"><h3 style="font-size:18px;margin:0">${T('Асосий хулосалар')}</h3><div class="split">${blocks.join('')}</div></div>`;
+}
+function admResponses(){
+  const f = S.adm, aud = f.rAud || 'citizen', per = 20;
+  const order = sortedResp(aud), total = order.length, numOf = new Map(order.map((r, i) => [r.id, total - i]));
+  const Q = SURVEYS[aud];
+  let list = order;
+  if (f.rSearch){ const q0 = f.rSearch.toLowerCase(); list = list.filter(r => Q.some(q => ansPlain(q, r.answers && r.answers[q.id]).toLowerCase().includes(q0)) || regionName(r.region).toLowerCase().includes(q0) || chanLabel(r).toLowerCase().includes(q0)); }
+  const pages = Math.max(1, Math.ceil(list.length / per)), page = Math.min(f.rPage || 0, pages - 1);
+  const slice = list.slice(page * per, page * per + per);
+  const pager = pages > 1 ? `<div class="pager"><button class="btn btn-ghost btn-sm" data-act="rpage" data-v="${page - 1}" ${page === 0 ? 'disabled' : ''}>${T('Олдинги')}</button><span class="muted num">${page + 1} / ${pages}</span><button class="btn btn-ghost btn-sm" data-act="rpage" data-v="${page + 1}" ${page >= pages - 1 ? 'disabled' : ''}>${T('Кейинги')}</button></div>` : '';
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Ҳар бир анкета саволлари билан')}</div><h1>${T('Барча жавоблар')}</h1></div>${audSeg('rAud', aud)}</div>
+    <div class="card filters"><div class="field"><label for="r-search">${T('Қидириш: жавоб матни, ҳудуд ёки канал')}</label><input type="text" id="r-search" data-rsearch="1" value="${esc(f.rSearch || '')}"></div>
+      <span class="muted">${T('Топилди')}: <b class="num">${fmt(list.length)}</b> / ${fmt(total)}</span></div>
+    ${!slice.length ? `<div class="card empty-state"><h3>${T('Жавоблар йўқ')}</h3><p>${T('Респондентлар сўровни тўлдирганда ҳар бир анкета шу ерда саволлари билан кўринади.')}</p></div>` :
+    slice.map(r => `<article class="card resp"><div class="resp-h"><b class="num">№ ${numOf.get(r.id)}</b><span class="tag">${dmy(r.date_bucket)}</span><span class="tag">${esc(regionName(r.region))}</span><span class="tag">${T('Канал')}: ${esc(chanLabel(r))}</span>${r.text_pii_masked ? `<span class="tag warn">${T('Шахсий маълумот яширилган')}</span>` : ''}</div>
+      <dl class="qa">${Q.map((q, qi) => { const a = ansPlain(q, r.answers && r.answers[q.id]); return `<div class="qa-row"><dt><span class="mono">${pad(qi + 1)}</span> ${T(qText(q))}</dt><dd>${a ? esc(a) : '<span class="muted">—</span>'}</dd></div>`; }).join('')}</dl></article>`).join('')}
+    ${pager}`;
+}
+function exportCard(){
+  const has = completed().length > 0, b = S.xBusy;
+  return `<div class="card panel stack"><h3 style="margin:0">${T('Ҳисобот файлларини юклаб олиш')}</h3>
+    <p class="muted">${T('Файллар барча жавоблар асосида тайёрланади ва ички фойдаланиш учун мўлжалланган.')}</p>
+    <ul class="checks" style="font-size:14px"><li>${T('PDF: инфографика, ҳар бир савол бўйича диаграмма, ҳудудлар жадвали ва методика.')}</li><li>${T('Word: таҳрирланадиган ҳисобот, диаграммалар ва жадваллар билан.')}</li><li>${T('Excel: натижалар, ҳудудлар ва ҳар бир анкета алоҳида варақларда.')}</li></ul>
+    <label class="check"><input type="checkbox" id="x-full" data-set="wordFull" ${S.adm.wordFull ? 'checked' : ''}><span>${T('Word файлига ҳар бир анкетани саволлари билан тўлиқ қўшиш')}</span></label>
+    <div class="row"><button class="btn btn-primary" data-act="xfile" data-v="pdf" ${!has || b ? 'disabled' : ''}>${T('PDF ҳисобот')}</button><button class="btn btn-primary" data-act="xfile" data-v="docx" ${!has || b ? 'disabled' : ''}>Word (.docx)</button><button class="btn btn-primary" data-act="xfile" data-v="xlsx" ${!has || b ? 'disabled' : ''}>Excel (.xlsx)</button></div>
+    ${b ? `<div class="notice info"><div><b>${T('Тайёрланмоқда…')}</b> ${esc(b)}</div></div>` : ''}
+    ${S.xErr ? `<div class="notice bad"><div>${esc(S.xErr)}</div></div>` : ''}
+    ${!has ? `<p class="muted" style="font-size:14px">${T('Файл яратиш учун камида битта тугалланган жавоб керак.')}</p>` : ''}</div>`;
+}
+const LIBS = {
+  xlsx: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+  docx: 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js',
+  jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+  h2c: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+};
+const libP = {};
+function loadLib(k){
+  return libP[k] || (libP[k] = new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = LIBS[k]; sc.onload = res; sc.onerror = () => { delete libP[k]; rej(new Error('lib ' + k)); }; document.head.appendChild(sc); }));
+}
+const fileBase = () => 'yol-ilmi-hisobot-' + todayBucket();
+const C_CIT = '#1A5C9C', C_EXP = '#0E7765';
+async function runExport(kind){
+  if (S.xBusy) return;
+  S.xErr = ''; S.xBusy = { pdf: tt('PDF ҳисобот'), docx: 'Word', xlsx: 'Excel' }[kind]; render();
+  try {
+    if (kind === 'xlsx') await exportXlsx(); else if (kind === 'docx') await exportDocx(); else await exportPdf();
+    await audit('export', fileBase() + '.' + kind); toast(tt('Файл тайёр'));
+  } catch(e){ console.error(e); S.xErr = tt('Файлни тайёрлаб бўлмади. Интернет алоқасини текшириб, қайта уриниб кўринг.'); }
+  S.xBusy = ''; render();
+}
+function fullRows(aud){
+  const Q = SURVEYS[aud], order = sortedResp(aud).reverse();
+  const head = ['№', tt('Сана'), tt('Ҳудуд'), tt('Канал'), tt('Версия'), ...Q.map((q, i) => (aud === 'citizen' ? 'A' : 'M') + '-' + pad(i + 1) + '. ' + tt(qText(q)))];
+  return [head, ...order.map((r, n) => [n + 1, r.date_bucket, regionName(r.region), chanLabel(r), r.version || '', ...Q.map(q => { const a = r.answers && r.answers[q.id]; return q.type === 'scale' && answered(a) ? a : ansPlain(q, a); })])];
+}
+function aggRows(){
+  const rows = [[tt('Аудитория'), tt('Савол'), tt('Вариант'), tt('Сони'), tt('Улуш, %'), tt('Жавоб берганлар (n)'), tt('Жавоб бермаган')]];
+  for (const aud of ['citizen','expert']){
+    const list = completed(aud); if (!list.length) continue;
+    qs(aud).forEach((q, i) => {
+      if (q.type === 'text') return;
+      const ag = aggQ(q, list), qn = (aud === 'citizen' ? 'A' : 'M') + '-' + pad(i + 1) + '. ' + tt(qText(q));
+      optLabels(q).forEach((o, k) => rows.push([tt(AUD_LABEL[aud]), qn, tt(o), ag.counts[k], ag.n ? pct(ag.counts[k], ag.n) : 0, ag.n, ag.skipped]));
+      if (q.type === 'scale') rows.push([tt(AUD_LABEL[aud]), qn, tt('Ўртача баҳо'), ag.mean != null ? +ag.mean.toFixed(2) : '', '', ag.n, ag.skipped]);
+    });
+  }
+  return rows;
+}
+function regionRows(){
+  const lc = completed('citizen'), le = completed('expert'), rc = regionCounts(lc), re = regionCounts(le), m4 = regionMean(lc, 'c04'), e8 = regionMean(le, 'e08');
+  const rows = [[tt('Ҳудуд'), tt('Аҳоли'), tt('Йўл ҳолати (1–5)'), tt('Мутахассислар'), tt('Хом ашё истиқболи (1–5)')]];
+  REGIONS.forEach((r, i) => rows.push([tt(r), rc[i], m4[i].mean != null ? +m4[i].mean.toFixed(2) : '', re[i], e8[i].mean != null ? +e8[i].mean.toFixed(2) : '']));
+  rows.push([tt('Кўрсатилмаган'), rc[NOREG], '', re[NOREG], '']);
+  rows.push([tt('Жами'), lc.length, '', le.length, '']);
+  return rows;
+}
+async function exportXlsx(){
+  await loadLib('xlsx');
+  const wb = XLSX.utils.book_new();
+  const add = (rows, name, widths) => { const ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols'] = widths.map(w => ({ wch: w })); XLSX.utils.book_append_sheet(wb, ws, name.slice(0, 31)); };
+  add(aggRows(), tt('Натижалар'), [14, 60, 45, 8, 9, 12, 12]);
+  add(regionRows(), tt('Ҳудудлар'), [30, 10, 16, 14, 22]);
+  ['citizen','expert'].forEach(aud => add(fullRows(aud), tt(aud === 'citizen' ? 'Аҳоли жавоблари' : 'Мутахассис жавоблари'), [5, 11, 26, 24, 8, ...SURVEYS[aud].map(() => 32)]));
+  const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  downloadBlob(new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), fileBase() + '.xlsx');
+}
+function fitText(g, s, w){ if (g.measureText(s).width <= w) return s; while (s.length > 3 && g.measureText(s + '…').width > w) s = s.slice(0, -1); return s + '…'; }
+function rr(g, x, y, w, h, r){ g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); }
+function chartCanvas(labels, counts, n, color){
+  const W = 1100, rowH = 60, top = 8, H = top + labels.length * rowH + 6;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+  const max = Math.max(1, ...counts);
+  labels.forEach((l, i) => {
+    const y = top + i * rowH, val = (n ? pct(counts[i], n) : 0) + '%  (' + counts[i] + ')';
+    g.textBaseline = 'top'; g.font = '600 24px "Noto Sans", Arial, sans-serif'; const vw = g.measureText(val).width;
+    g.fillStyle = '#14212A'; g.fillText(val, W - vw, y);
+    g.font = '24px "Noto Sans", Arial, sans-serif'; g.fillText(fitText(g, l, W - vw - 24), 0, y);
+    g.fillStyle = '#E4EAE9'; rr(g, 0, y + 34, W, 16, 8); g.fill();
+    const w = counts[i] ? Math.max(8, counts[i] / max * W) : 0;
+    if (w){ g.fillStyle = color; rr(g, 0, y + 34, w, 16, 8); g.fill(); }
+  });
+  return c;
+}
+async function exportDocx(){
+  await loadLib('docx'); await document.fonts.ready;
+  const D = window.docx;
+  const P = (text, o = {}) => new D.Paragraph({ heading: o.h, spacing: { after: o.after == null ? 120 : o.after }, children: [new D.TextRun({ text: String(text), bold: o.bold, size: o.size, color: o.color })] });
+  const cell = (t, bold, w) => new D.TableCell({ width: w ? { size: w, type: D.WidthType.PERCENTAGE } : undefined, children: [new D.Paragraph({ children: [new D.TextRun({ text: String(t), bold, size: 20 })] })] });
+  const ch = [];
+  ch.push(P('YO‘L ILMI', { bold: true, size: 36, color: '1A5C9C', after: 40 }));
+  ch.push(P(tt('Аноним илмий сўров натижалари бўйича ҳисобот'), { h: D.HeadingLevel.TITLE }));
+  ch.push(P(tt('Тайёрланган сана') + ': ' + dmy(todayBucket()) + ' · ' + tt('Сўров версияси') + ' ' + cfgVersion(), { color: '55666F' }));
+  ch.push(P(methodText(), { after: 240 }));
+  for (const aud of ['citizen','expert']){
+    const list = completed(aud), color = aud === 'citizen' ? C_CIT : C_EXP;
+    ch.push(P(tt(AUD_LABEL[aud]) + ' — ' + fmt(list.length) + ' ' + tt('тугалланган анкета'), { h: D.HeadingLevel.HEADING_1 }));
+    if (!list.length){ ch.push(P(tt('Ҳали жавоб йўқ.'))); continue; }
+    const kf = keyFindings(aud);
+    if (kf.length){
+      ch.push(P(tt('Асосий хулосалар'), { h: D.HeadingLevel.HEADING_2 }));
+      kf.forEach(([k, v, p, n]) => ch.push(new D.Paragraph({ bullet: { level: 0 }, children: [new D.TextRun({ text: k + ': ' }), new D.TextRun({ text: v + (p ? ' (' + p + ')' : ''), bold: true }), new D.TextRun({ text: '   n = ' + n, color: '55666F' })] })));
+    }
+    ch.push(P(tt('Саволлар бўйича натижалар'), { h: D.HeadingLevel.HEADING_2 }));
+    for (const [i, q] of qs(aud).entries()){
+      const code = (aud === 'citizen' ? 'A' : 'M') + '-' + pad(i + 1);
+      ch.push(P(code + '. ' + tt(qText(q)), { bold: true, after: 60 }));
+      if (q.type === 'text'){
+        const texts = list.map(r => r.answers && r.answers[q.id]).filter(Boolean);
+        ch.push(P(tt('Очиқ жавоблар') + ': ' + texts.length, { color: '55666F' }));
+        texts.forEach(t => ch.push(new D.Paragraph({ bullet: { level: 0 }, children: [new D.TextRun({ text: String(t) })] })));
+        continue;
+      }
+      const ag = aggQ(q, list), labels = optLabels(q).map(tt);
+      ch.push(P('n = ' + ag.n + ' · ' + tt('жавоб бермаган') + ': ' + ag.skipped + (ag.mean != null ? ' · ' + tt('ўртача') + ': ' + ag.mean.toFixed(2) : ''), { color: '55666F', size: 18, after: 60 }));
+      const cv = chartCanvas(labels, ag.counts, ag.n, color);
+      const buf = await (await new Promise(r => cv.toBlob(r, 'image/png'))).arrayBuffer();
+      ch.push(new D.Paragraph({ children: [new D.ImageRun({ data: buf, transformation: { width: 600, height: Math.round(600 * cv.height / cv.width) } })] }));
+      ch.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: [new D.TableRow({ tableHeader: true, children: [cell(tt('Вариант'), true, 70), cell(tt('Сони'), true, 15), cell('%', true, 15)] }), ...labels.map((l, k) => new D.TableRow({ children: [cell(l), cell(ag.counts[k]), cell((ag.n ? pct(ag.counts[k], ag.n) : 0) + '%')] }))] }));
+      ch.push(P('', { after: 160 }));
+    }
+    if (S.adm.wordFull){
+      ch.push(P(tt('Барча анкеталар'), { h: D.HeadingLevel.HEADING_2 }));
+      sortedResp(aud).reverse().forEach((r, n) => {
+        ch.push(P('№ ' + (n + 1) + ' · ' + dmy(r.date_bucket) + ' · ' + regionName(r.region) + ' · ' + tt('Канал') + ': ' + chanLabel(r), { bold: true, after: 60 }));
+        SURVEYS[aud].forEach((q, qi) => { const a = ansPlain(q, r.answers && r.answers[q.id]); ch.push(new D.Paragraph({ spacing: { after: 40 }, children: [new D.TextRun({ text: pad(qi + 1) + '. ' + tt(qText(q)) + ' — ', color: '55666F', size: 20 }), new D.TextRun({ text: a || '—', bold: true, size: 20 })] })); });
+        ch.push(P('', { after: 120 }));
+      });
+    }
+  }
+  ch.push(P(tt('Ҳудудлар кесими'), { h: D.HeadingLevel.HEADING_1 }));
+  const rows = regionRows();
+  ch.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: rows.map((row, i) => new D.TableRow({ tableHeader: i === 0, children: row.map(v => cell(v === '' ? '—' : v, i === 0 || i === rows.length - 1)) })) }));
+  const doc = new D.Document({ creator: 'YO‘L ILMI', title: tt('Сўров натижалари'), styles: { default: { document: { run: { font: 'Arial', size: 22 } } } }, sections: [{ children: ch }] });
+  downloadBlob(await D.Packer.toBlob(doc), fileBase() + '.docx');
+}
+async function exportPdf(){
+  await Promise.all([loadLib('jspdf'), loadLib('h2c')]); await document.fonts.ready;
+  const box = document.createElement('div'); box.className = 'pdf-root';
+  const blocks = [];
+  const add = html => { const d = document.createElement('div'); d.className = 'pdf-block'; d.innerHTML = html; box.appendChild(d); blocks.push(d); };
+  const kpi = (l, v) => `<div class="pk"><span>${esc(l)}</span><b>${esc(v)}</b></div>`;
+  const lc = completed('citizen'), le = completed('expert');
+  const regs = new Set(completed().filter(r => r.region != null).map(r => r.region)).size;
+  add(`<div class="pdf-cover"><div class="pdf-brand">YO‘L ILMI</div><h1>${T('Аноним илмий сўров натижалари')}</h1><p>${T('Автомобил йўллари илмий-тадқиқот институти')} · ${dmy(todayBucket())} · ${T('Версия')} ${esc(cfgVersion())}</p></div>
+    <div class="pk-row">${kpi(tt('Аҳоли жавоблари'), fmt(lc.length))}${kpi(tt('Мутахассис жавоблари'), fmt(le.length))}${kpi(tt('Ҳудуд қамрови'), regs + ' / 14')}${kpi(tt('Тадқиқот йўналишлари'), fmt(S.topics.length))}</div>`);
+  for (const aud of ['citizen','expert']){
+    const list = completed(aud), f = keyFindings(aud), color = aud === 'citizen' ? C_CIT : C_EXP;
+    add(`<h2 class="pdf-h2 ${aud}">${T(AUD_LABEL[aud])} — ${fmt(list.length)} ${T('анкета')}</h2>${f.length ? `<div class="pdf-kf">${f.map(([k, v, p, n]) => `<div><span>${esc(k)}</span><b>${esc(v)}${p ? ' · ' + esc(p) : ''}</b><small>n = ${n}</small></div>`).join('')}</div>` : `<p>${T('Ҳали жавоб йўқ.')}</p>`}`);
+    if (!list.length) continue;
+    qs(aud).forEach((q, i) => {
+      if (q.type === 'text') return;
+      const ag = aggQ(q, list), cv = chartCanvas(optLabels(q).map(tt), ag.counts, ag.n, color);
+      add(`<div class="pdf-q"><div class="pdf-qn">${aud === 'citizen' ? 'A' : 'M'}-${pad(i + 1)}</div><h3>${T(qText(q))}</h3><div class="pdf-meta">n = ${ag.n} · ${T('жавоб бермаган')}: ${ag.skipped}${ag.mean != null ? ' · ' + T('ўртача') + ': ' + ag.mean.toFixed(2).replace('.', ',') + ' / 5' : ''}${q.type === 'multi' ? ' · ' + T('бир нечта танлов') : ''}</div><img src="${cv.toDataURL('image/png')}" alt=""></div>`);
+    });
+    const tq = aud === 'citizen' ? 'c13' : 'e15';
+    const texts = list.map(r => r.answers && r.answers[tq]).filter(Boolean);
+    for (let k = 0; k < Math.min(texts.length, 60); k += 12) add(`${k === 0 ? `<h3 class="pdf-h3">${T('Очиқ жавоблар')} (${texts.length})</h3>` : ''}<ul class="pdf-texts">${texts.slice(k, k + 12).map(t => `<li>${esc(t)}</li>`).join('')}</ul>`);
+  }
+  const rows = regionRows();
+  add(`<h2 class="pdf-h2">${T('Ҳудудлар кесими')}</h2><table class="pdf-t">${rows.map((row, i) => `<tr>${row.map(v => i === 0 ? `<th>${esc(v)}</th>` : `<td>${esc(v === '' ? '—' : v)}</td>`).join('')}</tr>`).join('')}</table>`);
+  add(`<h2 class="pdf-h2">${T('Методика ва чекловлар')}</h2><p class="pdf-p">${esc(methodText())}</p>`);
+  document.body.appendChild(box);
+  try {
+    await Promise.all([...box.querySelectorAll('img')].map(im => im.complete ? 0 : new Promise(r => { im.onload = im.onerror = r; })));
+    const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+    const M = 12, PW = 210, PH = 297, CW = PW - 2 * M; let y = M;
+    for (const b of blocks){
+      const c = await html2canvas(b, { scale: 2, backgroundColor: '#ffffff', logging: false });
+      const h = c.height * CW / c.width;
+      if (y + h > PH - M - 6 && y > M){ pdf.addPage(); y = M; }
+      pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', M, y, CW, Math.min(h, PH - 2 * M));
+      y += h + 4;
+    }
+    const n = pdf.getNumberOfPages();
+    for (let i = 1; i <= n; i++){ pdf.setPage(i); pdf.setFontSize(8); pdf.setTextColor(120); pdf.text("YO'L ILMI  -  " + i + ' / ' + n, PW - M, PH - 6, { align: 'right' }); }
+    downloadBlob(pdf.output('blob'), fileBase() + '.pdf');
+  } finally { box.remove(); }
 }
 const linkUrl = l => siteUrl() + '?k=' + encodeURIComponent(l.token) + (l.audience ? '#' + l.audience : '');
 function admLinks(){
@@ -1423,7 +1701,7 @@ document.addEventListener('click', e => {
   if (act === 'submit') return void surveySubmit();
   if (act === 'resAud'){ S.resAud = v; render(); return; }
   if (act === 'admTab'){ S.adm.tab = v; S.confirm = null; render(); scrollTop(); return; }
-  if (act === 'admSet'){ S.adm[b.dataset.k] = v; render(); return; }
+  if (act === 'admSet'){ S.adm[b.dataset.k] = v; if (b.dataset.k === 'rAud') S.adm.rPage = 0; render(); return; }
   if (act === 'confirm'){ S.confirm = v || null; render(); return; }
   if (act === 'publish') return void publishSummary();
   if (act === 'unpublish') return void unpublish();
@@ -1446,6 +1724,8 @@ document.addEventListener('click', e => {
   if (act === 'logout') return void doLogout();
   if (act === 'refresh') return void loadAdmin();
   if (act === 'qrdl') return qrDownload(v);
+  if (act === 'rpage'){ S.adm.rPage = Math.max(0, +v); render(); scrollTop(); return; }
+  if (act === 'xfile') return void runExport(v);
   if (act === 'qr-toggle'){ S.qrOpen[v] = !S.qrOpen[v]; render(); return; }
   if (act === 'lf-create') return void createLink();
   if (act === 'lf-toggle') return void toggleLink(v);
@@ -1469,6 +1749,7 @@ document.addEventListener('change', e => {
     return;
   }
   if (el.dataset.set){ S.adm[el.dataset.set] = el.type === 'checkbox' ? el.checked : el.value; render(); return; }
+  if (el.dataset.rsearch){ S.adm.rSearch = el.value.trim(); S.adm.rPage = 0; render(); return; }
   if (el.dataset.lf){ S.lf[el.dataset.lf] = el.value; return; }
   if (el.dataset.tf && el.type === 'checkbox'){ S.tf[el.dataset.tf] = el.checked; return; }
   if (el.dataset.tf){ S.tf[el.dataset.tf] = el.value; return; }
