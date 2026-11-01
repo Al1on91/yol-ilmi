@@ -978,7 +978,7 @@ async function surveySubmit(){
     if (error) throw error;
     sv.saved = true; sv.stage = 'done'; S.done[sv.aud] = true;
   } catch(e){
-    sv.saveErr = (e && /row-level security/i.test(e.message || '')) ? tt('Таклиф ҳаволаси фаол эмас ёки бу сўров учун эмас.') : tt('Сервер жавобни қабул қилмади.') + (e && e.message ? ' (' + e.message + ')' : '');
+    sv.saveErr = (e && /row-level security/i.test(e.message || '')) ? tt('Жавобни сақлаб бўлмади. Саҳифани янгилаб, қайта уриниб кўринг.') : tt('Сервер жавобни қабул қилмади.') + (e && e.message ? ' (' + e.message + ')' : '');
   }
   sv.saving = false; render(); if (sv.stage === 'done') scrollTop();
 }
@@ -1810,7 +1810,7 @@ async function submitReport(){
   try {
     const id = crypto.randomUUID(), paths = [];
     for (let i = 0; i < p.photos.length; i++){
-      const path = `${S.link.token}/${id}-${i + 1}.jpg`;
+      const path = `${S.link.token || 'public'}/${id}-${i + 1}.jpg`;
       const { error } = await sb.storage.from('reports').upload(path, p.photos[i].blob, { contentType: 'image/jpeg', upsert: false });
       if (error) throw error; paths.push(path);
     }
@@ -1874,8 +1874,8 @@ const linkUrl = l => siteUrl() + '?k=' + encodeURIComponent(l.token) + (l.audien
 function admLinks(){
   const lf = S.lf;
   const used = tok => S.responses.filter(r => r.link_token === tok).length;
-  return `<div class="adm-h"><div><div class="eyebrow">${T('Кириш назорати')}</div><h1>${T('Таклиф ҳаволалари')}</h1></div></div>
-    <p class="muted" style="max-width:72ch">${T('Сўровда фақат шу ердаги фаол ҳаволалар орқали қатнашиш мумкин. Ҳаволасиз кирган одам сўровни кўрмайди ва жавоб юбора олмайди. Ҳаволани канал бўйича яратинг (масалан, «Самарқанд, Telegram гуруҳи»): у шахсни эмас, тарқатиш каналини белгилайди.')}</p>
+  return `<div class="adm-h"><div><div class="eyebrow">${T('Тарқатиш каналлари')}</div><h1>${T('Таклиф ҳаволалари')}</h1></div></div>
+    <p class="muted" style="max-width:72ch">${T('Сўров ҳамма учун очиқ: оддий манзил орқали ҳам қатнашиш мумкин. Ҳар бир тарқатиш канали учун алоҳида ҳавола яратсангиз (масалан, «Самарқанд, Telegram гуруҳи»), қайси каналдан қанча одам келгани шу ерда кўринади. Ҳавола шахсни эмас, каналини белгилайди.')}</p>
     ${channelHTML()}
     <div class="card panel stack"><h3 style="margin:0">${T('Янги ҳавола')}</h3>
       <div class="formgrid">
@@ -2131,7 +2131,7 @@ function qrDownload(tok){
 function render(){
   document.documentElement.lang = S.script === 'lat' ? 'uz-Latn' : 'uz-Cyrl';
   const r = S.route;
-  const locked = SB_OK && r !== 'admin' && !S.link.ok && !S.isAdmin;
+  const locked = false; // so'rovnoma hamma uchun ochiq; taklif havolalari faqat kanal hisobi uchun
   const view = locked ? viewLocked() : r === 'home' ? viewHome() : (r === 'citizen' || r === 'expert') ? viewSurvey() : r === 'results' ? viewResults() : r === 'report' ? viewReport() : r === 'about' ? viewAbout() : r === 'privacy' ? viewPrivacy() : viewAdmin();
   document.getElementById('app').innerHTML = header() + `<main id="view">${view}</main>` + footer();
   S.dirty = false;
@@ -2276,6 +2276,7 @@ async function checkLink(){
       if (!error && data && data.length){ S.link.ok = true; S.link.audience = data[0].audience || null; try { sessionStorage.setItem('yi-k', tok); } catch(e){} }
     } catch(e){}
   }
+  if (!S.link.ok){ S.link.token = null; try { sessionStorage.removeItem('yi-k'); } catch(e){} }
   S.link.checked = true;
   if (S.link.audience && (S.route === 'citizen' || S.route === 'expert') && S.route !== S.link.audience){ S.route = S.link.audience; S.sv = newSurvey(S.route); }
 }
